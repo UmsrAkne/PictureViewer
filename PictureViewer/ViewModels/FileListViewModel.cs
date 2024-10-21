@@ -16,7 +16,7 @@ namespace PictureViewer.ViewModels
         public ObservableCollection<ExFileInfo> Files
         {
             get => files;
-            private set => SetProperty(ref files, value);
+            set => SetProperty(ref files, value);
         }
 
         public string CurrentDirectoryPath
