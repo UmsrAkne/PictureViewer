@@ -12,7 +12,36 @@
     d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
     prism:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d">
+
     <Grid>
-        <ContentControl prism:RegionManager.RegionName="ContentRegion" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="3">
+            <TextBox />
+        </StackPanel>
+
+        <ListBox Grid.Row="1" Grid.Column="0" />
+
+        <GridSplitter
+            Grid.Row="1"
+            Grid.Column="1"
+            Width="3"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch" />
+
+        <Image Grid.Row="1" Grid.Column="2" />
+
     </Grid>
 </Window>
