@@ -7,5 +7,7 @@ namespace PictureViewer.ViewModels
     public class MainWindowViewModel : BindableBase
     {
         public TextWrapper TextWrapper { get; set; }
+
+        public FileListViewModel FileListViewModel { get; set; } = new ();
     }
 }
