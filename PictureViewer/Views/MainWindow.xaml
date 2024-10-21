@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:PictureViewer.Models"
     xmlns:prism="http://prismlibrary.com/"
     xmlns:viewModels="clr-namespace:PictureViewer.ViewModels"
     Title="{Binding TextWrapper}"
@@ -35,7 +36,26 @@
         <ListBox
             Grid.Row="1"
             Grid.Column="0"
-            ItemsSource="{Binding FileListViewModel.Files}" />
+            AlternationCount="2"
+            ItemsSource="{Binding FileListViewModel.Files}">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Style.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                            <Setter Property="Background" Value="WhiteSmoke" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
+
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type models:ExFileInfo}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding FileSystemInfo.Name}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
 
         <GridSplitter
             Grid.Row="1"

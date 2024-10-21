@@ -14,9 +14,13 @@ namespace PictureViewer.Models
             {
                 DirectoryInfo = (DirectoryInfo)f;
             }
+
+            FileSystemInfo = f;
         }
 
         public bool IsDirectory => DirectoryInfo != null;
+
+        public FileSystemInfo FileSystemInfo { get; }
 
         private FileInfo FileInfo { get; set; }
 
