@@ -29,10 +29,13 @@
             Grid.Row="0"
             Grid.Column="0"
             Grid.ColumnSpan="3">
-            <TextBox />
+            <TextBox Text="{Binding FileListViewModel.CurrentDirectoryPath}" />
         </StackPanel>
 
-        <ListBox Grid.Row="1" Grid.Column="0" />
+        <ListBox
+            Grid.Row="1"
+            Grid.Column="0"
+            ItemsSource="{Binding FileListViewModel.Files}" />
 
         <GridSplitter
             Grid.Row="1"

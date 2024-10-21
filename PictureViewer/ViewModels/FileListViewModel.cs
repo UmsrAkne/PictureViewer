@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,34 @@ namespace PictureViewer.ViewModels
     // ReSharper disable once ClassNeverInstantiated.Global
     public class FileListViewModel : BindableBase
     {
-        public ObservableCollection<ExFileInfo> Files { get; set; } = new ();
+        private string currentDirectoryPath;
+        private ObservableCollection<ExFileInfo> files = new ();
+
+        public ObservableCollection<ExFileInfo> Files
+        {
+            get => files;
+            private set => SetProperty(ref files, value);
+        }
+
+        public string CurrentDirectoryPath
+        {
+            get => currentDirectoryPath;
+            set
+            {
+                try
+                {
+                    LoadFileAndDirectories(value);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("ディレクトリの読み取りに失敗しました。");
+                    Console.WriteLine(e);
+                    return;
+                }
+
+                SetProperty(ref currentDirectoryPath, value);
+            }
+        }
 
         private void LoadFileAndDirectories(string directoryPath)
         {
