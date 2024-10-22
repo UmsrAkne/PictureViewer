@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using PictureViewer.Models;
 using Prism.Mvvm;
 
@@ -10,10 +11,24 @@ namespace PictureViewer.ViewModels
     // ReSharper disable once ClassNeverInstantiated.Global
     public class FileListViewModel : BindableBase
     {
+        private readonly FileSystemWatcher fileSystemWatcher = new ();
         private string currentDirectoryPath;
         private ObservableCollection<ExFileInfo> files = new ();
         private ExFileInfo selectedFileInfo;
         private string currentImageFilePath;
+
+        public FileListViewModel()
+        {
+            fileSystemWatcher.Filter = "*.png";
+            fileSystemWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.Size;
+            fileSystemWatcher.Created += (_, e) =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    Files.Add(new ExFileInfo(new FileInfo(e.FullPath)));
+                });
+            };
+        }
 
         public ObservableCollection<ExFileInfo> Files
         {
@@ -34,10 +49,13 @@ namespace PictureViewer.ViewModels
                 {
                     Console.WriteLine("ディレクトリの読み取りに失敗しました。");
                     Console.WriteLine(e);
+                    fileSystemWatcher.EnableRaisingEvents = false;
                     return;
                 }
 
                 SetProperty(ref currentDirectoryPath, value);
+                fileSystemWatcher.Path = value;
+                fileSystemWatcher.EnableRaisingEvents = true;
             }
         }
 
