@@ -1,9 +1,13 @@
 using System.IO;
+using Prism.Mvvm;
 
 namespace PictureViewer.Models
 {
-    public class ExFileInfo
+    public class ExFileInfo : BindableBase
     {
+        private bool isViewed;
+        private Rating rating = Rating.NoRating;
+
         public ExFileInfo(FileSystemInfo f)
         {
             if (f is FileInfo fi)
@@ -21,6 +25,10 @@ namespace PictureViewer.Models
         public bool IsDirectory => DirectoryInfo != null;
 
         public FileSystemInfo FileSystemInfo { get; }
+
+        public bool IsViewed { get => isViewed; set => SetProperty(ref isViewed, value); }
+
+        public Rating Rating { get => rating; set => SetProperty(ref rating, value); }
 
         private FileInfo FileInfo { get; set; }
 

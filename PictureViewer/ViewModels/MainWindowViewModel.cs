@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using PictureViewer.Models;
@@ -44,6 +45,7 @@ namespace PictureViewer.ViewModels
                     new (new DirectoryInfo("testDirectory7.png")),
                     new (new DirectoryInfo("testDirectory8.png")),
                 },
+                CurrentDirectoryPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\\test",
             };
         }
     }
