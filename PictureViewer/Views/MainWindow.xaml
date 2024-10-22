@@ -57,6 +57,22 @@
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:ExFileInfo}">
                     <StackPanel Orientation="Horizontal">
+                        <Border Width="4">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsViewed}" Value="True">
+                                            <Setter Property="Background" Value="Transparent" />
+                                        </DataTrigger>
+
+                                        <DataTrigger Binding="{Binding IsViewed}" Value="false">
+                                            <Setter Property="Background" Value="Orange" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                        </Border>
+                        <Border Width="0" Margin="3,0" />
                         <TextBlock Text="{Binding FileSystemInfo.Name}" />
                     </StackPanel>
                 </DataTemplate>
