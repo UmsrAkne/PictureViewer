@@ -1,6 +1,8 @@
+using System;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Xaml.Behaviors;
+using PictureViewer.Models;
 
 namespace PictureViewer.Behaviors
 {
@@ -44,6 +46,31 @@ namespace PictureViewer.Behaviors
             }
 
             lb.ScrollIntoView(lb.SelectedItem);
+
+            if (e.Key is Key.J or Key.K)
+            {
+                // key が j, k の場合はカーソル移動なので、ここで処理を中断する
+                return;
+            }
+
+            if (e.Key is >= Key.F or < Key.A)
+            {
+                if (e.Key != Key.N)
+                {
+                    return;
+                }
+            }
+
+            if (lb.SelectedItem is not ExFileInfo item)
+            {
+                return;
+            }
+
+            var r = e.Key != Key.N
+                ? (Rating)Enum.Parse(typeof(Rating), e.Key.ToString())
+                : Rating.NoRating;
+
+            item.Rating = r;
         }
     }
 }

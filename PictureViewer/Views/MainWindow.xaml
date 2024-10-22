@@ -11,7 +11,7 @@
     xmlns:prism="http://prismlibrary.com/"
     xmlns:viewModels="clr-namespace:PictureViewer.ViewModels"
     Title="{Binding TextWrapper}"
-    Width="525"
+    Width="700"
     Height="350"
     d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
     prism:ViewModelLocator.AutoWireViewModel="True"
@@ -19,6 +19,7 @@
 
     <Window.Resources>
         <converters:ImagePathConverter x:Key="ImagePathConverter" />
+        <converters:RatingConverter x:Key="RatingConverter" />
     </Window.Resources>
 
     <Grid>
@@ -79,6 +80,13 @@
                                 </Style>
                             </Border.Style>
                         </Border>
+                        <Border Width="0" Margin="3,0" />
+
+                        <TextBlock
+                            Width="15"
+                            Text="{Binding Rating, Converter={StaticResource RatingConverter}}"
+                            TextAlignment="Center" />
+
                         <Border Width="0" Margin="3,0" />
                         <TextBlock Text="{Binding FileSystemInfo.Name}" />
                     </StackPanel>
