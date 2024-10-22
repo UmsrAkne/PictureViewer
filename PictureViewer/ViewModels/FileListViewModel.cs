@@ -9,7 +9,7 @@ using Prism.Mvvm;
 namespace PictureViewer.ViewModels
 {
     // ReSharper disable once ClassNeverInstantiated.Global
-    public class FileListViewModel : BindableBase
+    public class FileListViewModel : BindableBase, IDisposable
     {
         private readonly FileSystemWatcher fileSystemWatcher = new ();
         private string currentDirectoryPath;
@@ -75,6 +75,17 @@ namespace PictureViewer.ViewModels
         {
             get => currentImageFilePath;
             private set => SetProperty(ref currentImageFilePath, value);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            fileSystemWatcher.Dispose();
         }
 
         private void LoadFileAndDirectories(string directoryPath)
