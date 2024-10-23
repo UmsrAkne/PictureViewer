@@ -29,7 +29,7 @@ namespace PictureViewer.Models
         [Conditional("RELEASE")]
         private void SetVersion()
         {
-            Version = "20241022" + "a";
+            Version = "20241023" + "a";
         }
 
         [Conditional("DEBUG")]
