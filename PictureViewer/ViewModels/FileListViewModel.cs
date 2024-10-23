@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace PictureViewer.ViewModels
     // ReSharper disable once ClassNeverInstantiated.Global
     public class FileListViewModel : BindableBase, IDisposable
     {
+        private readonly List<string> searchExtensions = new () { ".png", ".jpg", ".jpeg", ".bmp", ".gif", "webp", };
         private readonly FileSystemWatcher fileSystemWatcher = new ();
         private string currentDirectoryPath;
         private ObservableCollection<ExFileInfo> files = new ();
@@ -91,7 +93,8 @@ namespace PictureViewer.ViewModels
         private void LoadFileAndDirectories(string directoryPath)
         {
             var f = Directory.GetFiles(directoryPath)
-                .Select(p => new ExFileInfo(new FileInfo(p)));
+                .Select(p => new ExFileInfo(new FileInfo(p)))
+                .Where(e => searchExtensions.Contains(e.FileSystemInfo.Extension));
 
             var d = Directory.GetDirectories(directoryPath)
                 .Select(p => new ExFileInfo(new DirectoryInfo(p)));
