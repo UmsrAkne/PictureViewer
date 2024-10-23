@@ -43,6 +43,12 @@ namespace PictureViewer.Behaviors
                     }
 
                     break;
+                case Key.G:
+                    lb.SelectedIndex = Keyboard.Modifiers == ModifierKeys.Shift
+                        ? lb.Items.Count - 1
+                        : 0;
+
+                    break;
             }
 
             lb.ScrollIntoView(lb.SelectedItem);

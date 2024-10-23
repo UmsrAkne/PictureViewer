@@ -88,7 +88,21 @@
                             TextAlignment="Center" />
 
                         <Border Width="0" Margin="3,0" />
-                        <TextBlock Text="{Binding FileSystemInfo.Name}" />
+                        <TextBlock>
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsDirectory}" Value="True">
+                                            <Setter Property="Text" Value="{Binding FileSystemInfo.Name, StringFormat=[ {0} ]}" />
+                                        </DataTrigger>
+
+                                        <DataTrigger Binding="{Binding IsDirectory}" Value="False">
+                                            <Setter Property="Text" Value="{Binding FileSystemInfo.Name}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
