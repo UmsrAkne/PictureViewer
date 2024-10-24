@@ -1,10 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using PictureViewer.Models;
+using Prism.Commands;
 using Prism.Mvvm;
 
 namespace PictureViewer.ViewModels
@@ -12,12 +12,13 @@ namespace PictureViewer.ViewModels
     // ReSharper disable once ClassNeverInstantiated.Global
     public class FileListViewModel : BindableBase, IDisposable
     {
-        private readonly List<string> searchExtensions = new () { ".png", ".jpg", ".jpeg", ".bmp", ".gif", "webp", };
         private readonly FileSystemWatcher fileSystemWatcher = new ();
         private string currentDirectoryPath;
         private ObservableCollection<ExFileInfo> files = new ();
         private ExFileInfo selectedFileInfo;
         private string currentImageFilePath;
+        private ObservableCollection<ExFileInfo> currentDirectories = new ();
+        private ExFileInfo currentDirectory;
 
         public FileListViewModel()
         {
@@ -27,7 +28,7 @@ namespace PictureViewer.ViewModels
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    Files.Add(new ExFileInfo(new FileInfo(e.FullPath)));
+                    FilteredListProvider.Add(new ExFileInfo(new FileInfo(e.FullPath)));
                 });
             };
         }
@@ -37,6 +38,8 @@ namespace PictureViewer.ViewModels
             get => files;
             set => SetProperty(ref files, value);
         }
+
+        public FilteredListProvider FilteredListProvider { get; set; } = new ();
 
         public string CurrentDirectoryPath
         {
@@ -61,14 +64,38 @@ namespace PictureViewer.ViewModels
             }
         }
 
+        public ObservableCollection<ExFileInfo> CurrentDirectories
+        {
+            get => currentDirectories;
+            set => SetProperty(ref currentDirectories, value);
+        }
+
+        public ExFileInfo CurrentDirectory
+        {
+            get => currentDirectory;
+            set
+            {
+                if (value != null)
+                {
+                    CurrentDirectoryPath = value.FileSystemInfo.FullName;
+                }
+
+                SetProperty(ref currentDirectory, value);
+            }
+        }
+
         public ExFileInfo SelectedFileInfo
         {
             get => selectedFileInfo;
             set
             {
                 SetProperty(ref selectedFileInfo, value);
-                value.IsViewed = true;
+                if (value == null)
+                {
+                    return;
+                }
 
+                value.IsViewed = true;
                 CurrentImageFilePath = value.FileSystemInfo.FullName;
             }
         }
@@ -78,6 +105,27 @@ namespace PictureViewer.ViewModels
             get => currentImageFilePath;
             private set => SetProperty(ref currentImageFilePath, value);
         }
+
+        public DelegateCommand AddCurrentDirectoryCommand => new DelegateCommand(() =>
+        {
+            CurrentDirectories.Add(new ExFileInfo(new DirectoryInfo(CurrentDirectoryPath)));
+        });
+
+        public DelegateCommand<ExFileInfo> CloseCurrentDirectoryCommand => new DelegateCommand<ExFileInfo>((param) =>
+        {
+            if (param == null || !CurrentDirectories.Contains(param))
+            {
+                return;
+            }
+
+            var index = CurrentDirectories.IndexOf(param);
+            CurrentDirectories.RemoveAt(index);
+
+            if (CurrentDirectories.Count > 0)
+            {
+                CurrentDirectory = CurrentDirectories[Math.Min(CurrentDirectories.Count - 1, index)];
+            }
+        });
 
         public void Dispose()
         {
@@ -93,13 +141,12 @@ namespace PictureViewer.ViewModels
         private void LoadFileAndDirectories(string directoryPath)
         {
             var f = Directory.GetFiles(directoryPath)
-                .Select(p => new ExFileInfo(new FileInfo(p)))
-                .Where(e => searchExtensions.Contains(e.FileSystemInfo.Extension));
+                .Select(p => new ExFileInfo(new FileInfo(p)));
 
             var d = Directory.GetDirectories(directoryPath)
                 .Select(p => new ExFileInfo(new DirectoryInfo(p)));
 
-            Files = new ObservableCollection<ExFileInfo>(f.Concat(d).ToList());
+            FilteredListProvider.Replace(f.Concat(d).ToList());
         }
     }
 }

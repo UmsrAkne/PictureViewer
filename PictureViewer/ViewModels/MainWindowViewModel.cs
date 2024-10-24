@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -24,7 +25,11 @@ namespace PictureViewer.ViewModels
         {
             FileListViewModel = new FileListViewModel
             {
-                Files = new ObservableCollection<ExFileInfo>()
+                CurrentDirectoryPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\\test",
+            };
+
+            FileListViewModel.FilteredListProvider.AddRange(
+                new List<ExFileInfo>()
                 {
                     new (new FileInfo("test1.png")),
                     new (new FileInfo("test2.png")),
@@ -44,9 +49,17 @@ namespace PictureViewer.ViewModels
                     new (new DirectoryInfo("testDirectory6.png")),
                     new (new DirectoryInfo("testDirectory7.png")),
                     new (new DirectoryInfo("testDirectory8.png")),
-                },
-                CurrentDirectoryPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\\test",
-            };
+                });
+
+            FileListViewModel.CurrentDirectories.AddRange(new List<ExFileInfo>()
+            {
+                new (new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\\test")),
+                new (new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\\images")),
+                new (new DirectoryInfo("testDir1")),
+                new (new DirectoryInfo("testDir1")),
+                new (new DirectoryInfo("testDir1")),
+                new (new DirectoryInfo("testDir1")),
+            });
         }
     }
 }
