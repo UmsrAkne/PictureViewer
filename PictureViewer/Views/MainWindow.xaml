@@ -27,6 +27,12 @@
             Key="T"
             Command="{Binding FileListViewModel.AddCurrentDirectoryCommand}"
             Modifiers="Control" />
+
+        <KeyBinding
+            Key="W"
+            Command="{Binding FileListViewModel.CloseCurrentDirectoryCommand}"
+            CommandParameter="{Binding ElementName=TabListBox, Path=SelectedItem}"
+            Modifiers="Control" />
     </Window.InputBindings>
 
     <Grid>
@@ -43,6 +49,7 @@
         </Grid.ColumnDefinitions>
 
         <ListBox
+            x:Name="TabListBox"
             Grid.Row="0"
             Grid.Column="0"
             Grid.ColumnSpan="3"

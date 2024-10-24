@@ -75,7 +75,11 @@ namespace PictureViewer.ViewModels
             get => currentDirectory;
             set
             {
-                CurrentDirectoryPath = value.FileSystemInfo.FullName;
+                if (value != null)
+                {
+                    CurrentDirectoryPath = value.FileSystemInfo.FullName;
+                }
+
                 SetProperty(ref currentDirectory, value);
             }
         }
@@ -105,6 +109,22 @@ namespace PictureViewer.ViewModels
         public DelegateCommand AddCurrentDirectoryCommand => new DelegateCommand(() =>
         {
             CurrentDirectories.Add(new ExFileInfo(new DirectoryInfo(CurrentDirectoryPath)));
+        });
+
+        public DelegateCommand<ExFileInfo> CloseCurrentDirectoryCommand => new DelegateCommand<ExFileInfo>((param) =>
+        {
+            if (param == null || !CurrentDirectories.Contains(param))
+            {
+                return;
+            }
+
+            var index = CurrentDirectories.IndexOf(param);
+            CurrentDirectories.RemoveAt(index);
+
+            if (CurrentDirectories.Count > 0)
+            {
+                CurrentDirectory = CurrentDirectories[Math.Min(CurrentDirectories.Count - 1, index)];
+            }
         });
 
         public void Dispose()
