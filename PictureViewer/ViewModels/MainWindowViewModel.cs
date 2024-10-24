@@ -53,8 +53,8 @@ namespace PictureViewer.ViewModels
 
             FileListViewModel.CurrentDirectories.AddRange(new List<ExFileInfo>()
             {
-                new (new DirectoryInfo("testDir1")),
-                new (new DirectoryInfo("testDir1")),
+                new (new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\\test")),
+                new (new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\\images")),
                 new (new DirectoryInfo("testDir1")),
                 new (new DirectoryInfo("testDir1")),
                 new (new DirectoryInfo("testDir1")),

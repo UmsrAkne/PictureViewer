@@ -17,6 +17,7 @@ namespace PictureViewer.ViewModels
         private ExFileInfo selectedFileInfo;
         private string currentImageFilePath;
         private ObservableCollection<ExFileInfo> currentDirectories = new ();
+        private ExFileInfo currentDirectory;
 
         public FileListViewModel()
         {
@@ -66,6 +67,16 @@ namespace PictureViewer.ViewModels
         {
             get => currentDirectories;
             set => SetProperty(ref currentDirectories, value);
+        }
+
+        public ExFileInfo CurrentDirectory
+        {
+            get => currentDirectory;
+            set
+            {
+                CurrentDirectoryPath = value.FileSystemInfo.FullName;
+                SetProperty(ref currentDirectory, value);
+            }
         }
 
         public ExFileInfo SelectedFileInfo

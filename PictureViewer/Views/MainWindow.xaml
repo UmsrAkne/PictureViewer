@@ -39,7 +39,8 @@
             Grid.Row="0"
             Grid.Column="0"
             Grid.ColumnSpan="3"
-            ItemsSource="{Binding FileListViewModel.CurrentDirectories}">
+            ItemsSource="{Binding FileListViewModel.CurrentDirectories}"
+            SelectedItem="{Binding FileListViewModel.CurrentDirectory}">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" />
