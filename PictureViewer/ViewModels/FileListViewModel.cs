@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using PictureViewer.Models;
+using Prism.Commands;
 using Prism.Mvvm;
 
 namespace PictureViewer.ViewModels
@@ -100,6 +101,11 @@ namespace PictureViewer.ViewModels
             get => currentImageFilePath;
             private set => SetProperty(ref currentImageFilePath, value);
         }
+
+        public DelegateCommand AddCurrentDirectoryCommand => new DelegateCommand(() =>
+        {
+            CurrentDirectories.Add(new ExFileInfo(new DirectoryInfo(CurrentDirectoryPath)));
+        });
 
         public void Dispose()
         {
