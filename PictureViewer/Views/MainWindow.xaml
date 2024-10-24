@@ -59,6 +59,8 @@
                             <Setter Property="Background" Value="WhiteSmoke" />
                         </Trigger>
                     </Style.Triggers>
+
+                    <Setter Property="IsSelected" Value="{Binding Path=DataContext.IsSelected, RelativeSource={RelativeSource Mode=Self}}" />
                 </Style>
             </ListBox.ItemContainerStyle>
 

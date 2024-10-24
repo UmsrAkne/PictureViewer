@@ -66,15 +66,8 @@ namespace PictureViewer.ViewModels
             get => selectedFileInfo;
             set
             {
-                if (selectedFileInfo != null)
-                {
-                    selectedFileInfo.IsSelected = false;
-                }
-
                 SetProperty(ref selectedFileInfo, value);
                 value.IsViewed = true;
-                value.IsSelected = true;
-
                 CurrentImageFilePath = value.FileSystemInfo.FullName;
             }
         }
