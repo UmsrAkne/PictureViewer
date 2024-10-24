@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using PictureViewer.Models;
@@ -49,6 +50,16 @@ namespace PictureViewer.ViewModels
                     new (new DirectoryInfo("testDirectory7.png")),
                     new (new DirectoryInfo("testDirectory8.png")),
                 });
+
+            FileListViewModel.CurrentDirectories.AddRange(new List<ExFileInfo>()
+            {
+                new (new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\\test")),
+                new (new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\\images")),
+                new (new DirectoryInfo("testDir1")),
+                new (new DirectoryInfo("testDir1")),
+                new (new DirectoryInfo("testDir1")),
+                new (new DirectoryInfo("testDir1")),
+            });
         }
     }
 }

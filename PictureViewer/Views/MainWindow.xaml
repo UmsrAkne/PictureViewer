@@ -25,6 +25,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
@@ -34,15 +35,49 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <StackPanel
+        <ListBox
             Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            ItemsSource="{Binding FileListViewModel.CurrentDirectories}"
+            SelectedItem="{Binding FileListViewModel.CurrentDirectory}">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="Padding" Value="0" />
+                </Style>
+            </ListBox.ItemContainerStyle>
+
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type models:ExFileInfo}">
+                    <StackPanel Orientation="Horizontal">
+                        <Border
+                            Padding="3,0"
+                            BorderBrush="DarkGray"
+                            BorderThickness="1,1,1,0"
+                            CornerRadius="3">
+                            <TextBlock Margin="0" Text="{Binding FileSystemInfo.Name}" />
+                        </Border>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <StackPanel
+            Grid.Row="1"
             Grid.Column="0"
             Grid.ColumnSpan="3">
             <TextBox Text="{Binding FileListViewModel.CurrentDirectoryPath}" />
         </StackPanel>
 
         <ListBox
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.Column="0"
             AlternationCount="2"
             ItemsSource="{Binding FileListViewModel.FilteredListProvider.Files}"
@@ -111,14 +146,14 @@
         </ListBox>
 
         <GridSplitter
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.Column="1"
             Width="3"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch" />
 
         <Image
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.Column="2"
             Source="{Binding FileListViewModel.CurrentImageFilePath, Converter={StaticResource ImagePathConverter}}" />
 
