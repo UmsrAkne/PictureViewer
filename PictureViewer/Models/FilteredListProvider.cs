@@ -7,6 +7,7 @@ namespace PictureViewer.Models
 {
     public class FilteredListProvider : BindableBase
     {
+        private readonly List<string> searchExtensions = new () { ".png", ".jpg", ".jpeg", ".bmp", ".gif", "webp", };
         private ObservableCollection<ExFileInfo> files = new ();
 
         public ObservableCollection<ExFileInfo> Files { get => files; set => SetProperty(ref files, value); }
@@ -18,26 +19,31 @@ namespace PictureViewer.Models
             var fss = fs.ToList();
             OriginalFiles.AddRange(fss);
             Files.AddRange(fss);
-            Sort();
         }
 
         public void Add(ExFileInfo f)
         {
             OriginalFiles.Add(f);
-            Files.Add(f);
-            Sort();
+            if (searchExtensions.Contains(f.FileSystemInfo.Extension.ToLower()))
+            {
+                Files.Add(f);
+            }
         }
 
         public void Replace(IEnumerable<ExFileInfo> fs)
         {
             OriginalFiles = fs.ToList();
-            Files = new ObservableCollection<ExFileInfo>(OriginalFiles);
-            Sort();
+            Files = new ObservableCollection<ExFileInfo>(Sort(Filter(OriginalFiles)));
         }
 
-        private void Sort()
+        private IEnumerable<ExFileInfo> Sort(IEnumerable<ExFileInfo> fs)
         {
-            Files = new ObservableCollection<ExFileInfo>(Files.OrderBy(f => f.FileSystemInfo.Name));
+            return fs.OrderBy(f => f.FileSystemInfo.Name);
+        }
+
+        private IEnumerable<ExFileInfo> Filter(IEnumerable<ExFileInfo> fs)
+        {
+            return fs.Where(f => searchExtensions.Contains(f.FileSystemInfo.Extension.ToLower()) || f.IsDirectory);
         }
     }
 }
