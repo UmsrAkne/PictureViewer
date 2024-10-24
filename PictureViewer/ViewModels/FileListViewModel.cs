@@ -27,7 +27,7 @@ namespace PictureViewer.ViewModels
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    Files.Add(new ExFileInfo(new FileInfo(e.FullPath)));
+                    FilteredListProvider.Add(new ExFileInfo(new FileInfo(e.FullPath)));
                 });
             };
         }
@@ -37,6 +37,8 @@ namespace PictureViewer.ViewModels
             get => files;
             set => SetProperty(ref files, value);
         }
+
+        public FilteredListProvider FilteredListProvider { get; set; } = new ();
 
         public string CurrentDirectoryPath
         {
@@ -98,7 +100,7 @@ namespace PictureViewer.ViewModels
             var d = Directory.GetDirectories(directoryPath)
                 .Select(p => new ExFileInfo(new DirectoryInfo(p)));
 
-            Files = new ObservableCollection<ExFileInfo>(f.Concat(d).ToList());
+            FilteredListProvider.Replace(f.Concat(d).ToList());
         }
     }
 }

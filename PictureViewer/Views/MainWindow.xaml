@@ -45,7 +45,7 @@
             Grid.Row="1"
             Grid.Column="0"
             AlternationCount="2"
-            ItemsSource="{Binding FileListViewModel.Files}"
+            ItemsSource="{Binding FileListViewModel.FilteredListProvider.Files}"
             SelectedItem="{Binding FileListViewModel.SelectedFileInfo}">
 
             <i:Interaction.Behaviors>
