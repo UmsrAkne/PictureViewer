@@ -134,7 +134,8 @@ namespace PictureViewer.ViewModels
 
         public DelegateCommand ShowTextInputDialogCommand => new DelegateCommand(() =>
         {
-            dialogService.ShowDialog(nameof(TextInputDialog), new DialogParameters(), result =>
+            var p = new DialogParameters { { nameof(TextInputDialogViewModel.Message), "ディレクトリを作成します。名前を入力してください。" }, };
+            dialogService.ShowDialog(nameof(TextInputDialog), p, result =>
             {
                 if (result.Result == ButtonResult.OK)
                 {

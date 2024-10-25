@@ -9,6 +9,7 @@ namespace PictureViewer.ViewModels
     public class TextInputDialogViewModel : BindableBase, IDialogAware
     {
         private string text;
+        private string message;
 
         public event Action<IDialogResult> RequestClose;
 
@@ -28,6 +29,8 @@ namespace PictureViewer.ViewModels
             RequestClose?.Invoke(new DialogResult(result.Value));
         });
 
+        public string Message { get => message; set => SetProperty(ref message, value); }
+
         public bool CanCloseDialog() => true;
 
         public void OnDialogClosed()
@@ -36,6 +39,11 @@ namespace PictureViewer.ViewModels
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
+            parameters.TryGetValue(nameof(Message), out string m);
+            if (!string.IsNullOrWhiteSpace(m))
+            {
+                Message = m;
+            }
         }
     }
 }
