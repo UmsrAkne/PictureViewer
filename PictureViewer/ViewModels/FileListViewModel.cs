@@ -4,14 +4,17 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using PictureViewer.Models;
+using PictureViewer.Views;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Services.Dialogs;
 
 namespace PictureViewer.ViewModels
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     public class FileListViewModel : BindableBase, IDisposable
     {
+        private readonly IDialogService dialogService;
         private readonly FileSystemWatcher fileSystemWatcher = new ();
         private string currentDirectoryPath;
         private ObservableCollection<ExFileInfo> files = new ();
@@ -20,7 +23,7 @@ namespace PictureViewer.ViewModels
         private ObservableCollection<ExFileInfo> currentDirectories = new ();
         private ExFileInfo currentDirectory;
 
-        public FileListViewModel()
+        public FileListViewModel(IDialogService dialogService = null)
         {
             fileSystemWatcher.Filter = "*.png";
             fileSystemWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.Size;
@@ -31,6 +34,8 @@ namespace PictureViewer.ViewModels
                     FilteredListProvider.Add(new ExFileInfo(new FileInfo(e.FullPath)));
                 });
             };
+
+            this.dialogService = dialogService;
         }
 
         public ObservableCollection<ExFileInfo> Files
@@ -125,6 +130,36 @@ namespace PictureViewer.ViewModels
             {
                 CurrentDirectory = CurrentDirectories[Math.Min(CurrentDirectories.Count - 1, index)];
             }
+        });
+
+        public DelegateCommand ShowTextInputDialogCommand => new DelegateCommand(() =>
+        {
+            var p = new DialogParameters { { nameof(TextInputDialogViewModel.Message), "ディレクトリを作成します。名前を入力してください。" }, };
+            dialogService.ShowDialog(nameof(TextInputDialog), p, result =>
+            {
+                if (result.Result != ButtonResult.OK)
+                {
+                    return;
+                }
+
+                try
+                {
+                    result.Parameters.TryGetValue<string>(nameof(TextInputDialogViewModel.Text), out var t);
+                    if (string.IsNullOrWhiteSpace(t))
+                    {
+                        return;
+                    }
+
+                    var info = new DirectoryInfo($"{CurrentDirectoryPath}\\{t}");
+                    Directory.CreateDirectory(info.FullName);
+                    FilteredListProvider.Add(new ExFileInfo(info));
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            });
         });
 
         public void Dispose()

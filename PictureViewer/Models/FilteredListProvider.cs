@@ -24,7 +24,7 @@ namespace PictureViewer.Models
         public void Add(ExFileInfo f)
         {
             OriginalFiles.Add(f);
-            if (searchExtensions.Contains(f.FileSystemInfo.Extension.ToLower()))
+            if (searchExtensions.Contains(f.FileSystemInfo.Extension.ToLower()) || f.IsDirectory)
             {
                 Files.Add(f);
             }

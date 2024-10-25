@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using PictureViewer.ViewModels;
 using PictureViewer.Views;
 using Prism.Ioc;
 
@@ -16,6 +17,7 @@ namespace PictureViewer
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            containerRegistry.RegisterDialog<TextInputDialog, TextInputDialogViewModel>();
         }
     }
 }
