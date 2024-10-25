@@ -152,6 +152,7 @@ namespace PictureViewer.ViewModels
 
                     var info = new DirectoryInfo($"{CurrentDirectoryPath}\\{t}");
                     Directory.CreateDirectory(info.FullName);
+                    FilteredListProvider.Add(new ExFileInfo(info));
                 }
                 catch (Exception e)
                 {
