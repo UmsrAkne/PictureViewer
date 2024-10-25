@@ -12,6 +12,19 @@
     d:DataContext="{d:DesignInstance viewModels:TextInputDialogViewModel}"
     mc:Ignorable="d">
 
+    <Page.InputBindings>
+        <KeyBinding
+            Key="Enter"
+            Command="{Binding CloseCommand}"
+            CommandParameter="{x:Static dialogs:ButtonResult.OK}"
+            Modifiers="Control" />
+
+        <KeyBinding
+            Key="Escape"
+            Command="{Binding CloseCommand}"
+            CommandParameter="{x:Static dialogs:ButtonResult.Cancel}" />
+    </Page.InputBindings>
+
     <Grid Margin="5" FocusManager.FocusedElement="{Binding ElementName=TextBox}">
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -36,13 +49,13 @@
                 Padding="30,0"
                 Command="{Binding CloseCommand}"
                 CommandParameter="{x:Static dialogs:ButtonResult.OK}"
-                Content="OK" />
+                Content="OK ( Ctrl + Enter )" />
 
             <Button
                 Padding="8,0"
                 Command="{Binding CloseCommand}"
                 CommandParameter="{x:Static dialogs:ButtonResult.Cancel}"
-                Content="Close" />
+                Content="Close ( Esc )" />
         </StackPanel>
 
     </Grid>
