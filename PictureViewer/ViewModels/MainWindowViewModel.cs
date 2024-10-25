@@ -33,10 +33,13 @@ namespace PictureViewer.ViewModels
         [Conditional("DEBUG")]
         private void SetDummyData()
         {
-            FileListViewModel = new FileListViewModel
+            if (FileListViewModel == null)
             {
-                CurrentDirectoryPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\\test",
-            };
+                FileListViewModel = new FileListViewModel();
+            }
+
+            FileListViewModel.CurrentDirectoryPath =
+                $"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\\test";
 
             FileListViewModel.FilteredListProvider.AddRange(
                 new List<ExFileInfo>()
