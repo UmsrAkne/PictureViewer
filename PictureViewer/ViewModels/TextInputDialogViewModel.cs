@@ -26,7 +26,7 @@ namespace PictureViewer.ViewModels
 
             var r = new DialogResult(result.Value);
             r.Parameters.Add(nameof(Text), Text);
-            RequestClose?.Invoke(new DialogResult(result.Value));
+            RequestClose?.Invoke(r);
         });
 
         public string Message { get => message; set => SetProperty(ref message, value); }

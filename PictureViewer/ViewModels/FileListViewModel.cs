@@ -137,8 +137,26 @@ namespace PictureViewer.ViewModels
             var p = new DialogParameters { { nameof(TextInputDialogViewModel.Message), "ディレクトリを作成します。名前を入力してください。" }, };
             dialogService.ShowDialog(nameof(TextInputDialog), p, result =>
             {
-                if (result.Result == ButtonResult.OK)
+                if (result.Result != ButtonResult.OK)
                 {
+                    return;
+                }
+
+                try
+                {
+                    result.Parameters.TryGetValue<string>(nameof(TextInputDialogViewModel.Text), out var t);
+                    if (string.IsNullOrWhiteSpace(t))
+                    {
+                        return;
+                    }
+
+                    var info = new DirectoryInfo($"{CurrentDirectoryPath}\\{t}");
+                    Directory.CreateDirectory(info.FullName);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
                 }
             });
         });
