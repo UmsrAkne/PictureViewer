@@ -5,20 +5,30 @@ using System.Diagnostics;
 using System.IO;
 using PictureViewer.Models;
 using Prism.Mvvm;
+using Prism.Services.Dialogs;
 
 namespace PictureViewer.ViewModels
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     public class MainWindowViewModel : BindableBase
     {
+        private readonly IDialogService dialogService;
+
         public MainWindowViewModel()
         {
             SetDummyData();
         }
 
+        public MainWindowViewModel(IDialogService dialogService)
+        {
+            this.dialogService = dialogService;
+            FileListViewModel = new FileListViewModel(dialogService);
+            SetDummyData();
+        }
+
         public TextWrapper TextWrapper { get; set; }
 
-        public FileListViewModel FileListViewModel { get; set; } = new ();
+        public FileListViewModel FileListViewModel { get; set; }
 
         [Conditional("DEBUG")]
         private void SetDummyData()
