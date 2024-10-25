@@ -33,6 +33,11 @@
             Command="{Binding FileListViewModel.CloseCurrentDirectoryCommand}"
             CommandParameter="{Binding ElementName=TabListBox, Path=SelectedItem}"
             Modifiers="Control" />
+
+        <KeyBinding
+            Key="N"
+            Command="{Binding FileListViewModel.ShowTextInputDialogCommand}"
+            Modifiers="Control+Shift" />
     </Window.InputBindings>
 
     <Grid>
@@ -43,7 +48,7 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.5*" />
+            <ColumnDefinition Width="200" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
