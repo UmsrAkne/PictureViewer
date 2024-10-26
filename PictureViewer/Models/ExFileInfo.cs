@@ -25,7 +25,7 @@ namespace PictureViewer.Models
 
         public bool IsDirectory => DirectoryInfo != null;
 
-        public FileSystemInfo FileSystemInfo { get; }
+        public FileSystemInfo FileSystemInfo { get; private set; }
 
         public bool IsViewed { get => isViewed; set => SetProperty(ref isViewed, value); }
 
@@ -36,5 +36,33 @@ namespace PictureViewer.Models
         private FileInfo FileInfo { get; set; }
 
         private DirectoryInfo DirectoryInfo { get; set; }
+
+        /// <summary>
+        /// このインスタンスが保持している FileInfo または DirectoryInfo を置き換えます。
+        /// </summary>
+        /// <param name="f">セットする FileInfo or DirectoryInfo</param>
+        public void SetFileSystemInfo(FileSystemInfo f)
+        {
+            FileInfo = null;
+            DirectoryInfo = null;
+            FileSystemInfo = null;
+
+            IsViewed = false;
+            Rating = Rating.NoRating;
+
+            if (f is FileInfo fi)
+            {
+                FileInfo = fi;
+            }
+            else
+            {
+                DirectoryInfo = (DirectoryInfo)f;
+            }
+
+            FileSystemInfo = f;
+
+            RaisePropertyChanged(nameof(IsDirectory));
+            RaisePropertyChanged(nameof(FileSystemInfo));
+        }
     }
 }

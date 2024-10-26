@@ -17,7 +17,6 @@ namespace PictureViewer.ViewModels
         private readonly IDialogService dialogService;
         private readonly FileSystemWatcher fileSystemWatcher = new ();
         private string currentDirectoryPath;
-        private ObservableCollection<ExFileInfo> files = new ();
         private ExFileInfo selectedFileInfo;
         private string currentImageFilePath;
         private ObservableCollection<ExFileInfo> currentDirectories = new ();
@@ -36,12 +35,6 @@ namespace PictureViewer.ViewModels
             };
 
             this.dialogService = dialogService;
-        }
-
-        public ObservableCollection<ExFileInfo> Files
-        {
-            get => files;
-            set => SetProperty(ref files, value);
         }
 
         public FilteredListProvider FilteredListProvider { get; set; } = new ();
@@ -130,6 +123,17 @@ namespace PictureViewer.ViewModels
             {
                 CurrentDirectory = CurrentDirectories[Math.Min(CurrentDirectories.Count - 1, index)];
             }
+        });
+
+        public DelegateCommand<ExFileInfo> OpenDirectoryCommand => new ((param) =>
+        {
+            if (param is not { IsDirectory: true, })
+            {
+                return;
+            }
+
+            SelectedFileInfo.SetFileSystemInfo(param.FileSystemInfo);
+            CurrentDirectoryPath = SelectedFileInfo.FileSystemInfo.FullName;
         });
 
         public DelegateCommand ShowTextInputDialogCommand => new DelegateCommand(() =>
