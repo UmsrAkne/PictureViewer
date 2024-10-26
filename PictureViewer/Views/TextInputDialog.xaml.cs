@@ -1,8 +1,6 @@
-using System.Windows.Controls;
-
 namespace PictureViewer.Views
 {
-    public partial class TextInputDialog : Page
+    public partial class TextInputDialog
     {
         public TextInputDialog()
         {
