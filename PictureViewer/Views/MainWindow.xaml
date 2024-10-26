@@ -102,6 +102,13 @@
             ItemsSource="{Binding FileListViewModel.FilteredListProvider.Files}"
             SelectedItem="{Binding FileListViewModel.SelectedFileInfo}">
 
+            <ListBox.InputBindings>
+                <KeyBinding
+                    Key="Enter"
+                    Command="{Binding FileListViewModel.OpenDirectoryCommand}"
+                    CommandParameter="{Binding FileListViewModel.SelectedFileInfo}" />
+            </ListBox.InputBindings>
+
             <i:Interaction.Behaviors>
                 <behaviors:ListBoxKeyDownBehavior />
             </i:Interaction.Behaviors>

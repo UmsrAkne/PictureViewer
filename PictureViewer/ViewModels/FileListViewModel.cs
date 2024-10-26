@@ -132,6 +132,17 @@ namespace PictureViewer.ViewModels
             }
         });
 
+        public DelegateCommand<ExFileInfo> OpenDirectoryCommand => new ((param) =>
+        {
+            if (param is not { IsDirectory: true, })
+            {
+                return;
+            }
+
+            SelectedFileInfo.SetFileSystemInfo(param.FileSystemInfo);
+            CurrentDirectoryPath = SelectedFileInfo.FileSystemInfo.FullName;
+        });
+
         public DelegateCommand ShowTextInputDialogCommand => new DelegateCommand(() =>
         {
             var p = new DialogParameters { { nameof(TextInputDialogViewModel.Message), "ディレクトリを作成します。名前を入力してください。" }, };
