@@ -48,7 +48,7 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="300" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
@@ -151,7 +151,7 @@
                             TextAlignment="Center" />
 
                         <Border Width="0" Margin="3,0" />
-                        <TextBlock>
+                        <TextBlock Width="150">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Style.Triggers>
@@ -166,6 +166,25 @@
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
+
+                        <Border Width="0" Margin="3,0" />
+
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Style.Triggers>
+                                        <!--  画像ファイルならば、縦横のサイズはいずれも 1 以上であるため、横だけ 0 か確認すれば良い  -->
+                                        <DataTrigger Binding="{Binding Width}" Value="0">
+                                            <Setter Property="Visibility" Value="Hidden" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <TextBlock Width="30" Text="{Binding Width}" />
+                            <TextBlock Margin="5,0" Text="x" />
+                            <TextBlock Width="30" Text="{Binding Height}" />
+                        </StackPanel>
+
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
