@@ -22,8 +22,15 @@ namespace PictureViewer.ViewModels
         private ObservableCollection<ExFileInfo> currentDirectories = new ();
         private ExFileInfo currentDirectory;
 
-        public FileListViewModel(IDialogService dialogService = null)
+        public FileListViewModel(string defaultDirectoryPath = null, IDialogService dialogService = null)
         {
+            CurrentDirectories.Add(!string.IsNullOrWhiteSpace(defaultDirectoryPath)
+                ? new ExFileInfo(new DirectoryInfo(defaultDirectoryPath))
+                : new ExFileInfo(
+                    new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)}")));
+
+            CurrentDirectory = CurrentDirectories.First();
+
             fileSystemWatcher.Filter = "*.png";
             fileSystemWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.Size;
             fileSystemWatcher.Created += (_, e) =>
@@ -47,6 +54,7 @@ namespace PictureViewer.ViewModels
                 try
                 {
                     LoadFileAndDirectories(value);
+                    CurrentDirectory.SetFileSystemInfo(new DirectoryInfo(value));
                 }
                 catch (Exception e)
                 {

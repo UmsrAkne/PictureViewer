@@ -19,7 +19,7 @@ namespace PictureViewer.ViewModels
 
         public MainWindowViewModel(IDialogService dialogService)
         {
-            FileListViewModel = new FileListViewModel(dialogService);
+            FileListViewModel = new FileListViewModel(string.Empty, dialogService);
             SetDummyData();
         }
 
@@ -31,9 +31,6 @@ namespace PictureViewer.ViewModels
         private void SetDummyData()
         {
             FileListViewModel ??= new FileListViewModel();
-
-            FileListViewModel.CurrentDirectoryPath =
-                $"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\\test";
 
             FileListViewModel.FilteredListProvider.AddRange(
                 new List<ExFileInfo>()
