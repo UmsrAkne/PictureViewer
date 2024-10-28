@@ -23,7 +23,7 @@ namespace PictureViewer.ViewModels
             SetDummyData();
         }
 
-        public TextWrapper TextWrapper { get; set; }
+        public TextWrapper TextWrapper { get; } = new ();
 
         public FileListViewModel FileListViewModel { get; private set; }
 
