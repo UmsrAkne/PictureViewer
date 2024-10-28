@@ -1,4 +1,8 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
+using System.Windows.Media.Imaging;
 using Prism.Mvvm;
 
 namespace PictureViewer.Models
@@ -8,12 +12,14 @@ namespace PictureViewer.Models
         private bool isViewed;
         private Rating rating = Rating.NoRating;
         private bool isSelected;
+        private Size size;
 
         public ExFileInfo(FileSystemInfo f)
         {
             if (f is FileInfo fi)
             {
                 FileInfo = fi;
+                Size = GetImageSize(fi.FullName);
             }
             else
             {
@@ -32,6 +38,22 @@ namespace PictureViewer.Models
         public Rating Rating { get => rating; set => SetProperty(ref rating, value); }
 
         public bool IsSelected { get => isSelected; set => SetProperty(ref isSelected, value); }
+
+        public int Width { get; set; }
+
+        public int Height { get; set; }
+
+        // [NotMapped]
+        public Size Size
+        {
+            get => size;
+            set
+            {
+                Width = value.Width;
+                Height = value.Height;
+                SetProperty(ref size, value);
+            }
+        }
 
         private FileInfo FileInfo { get; set; }
 
@@ -63,6 +85,31 @@ namespace PictureViewer.Models
 
             RaisePropertyChanged(nameof(IsDirectory));
             RaisePropertyChanged(nameof(FileSystemInfo));
+        }
+
+        private static Size GetImageSize(string filePath)
+        {
+            var fileExtension = Path.GetExtension(filePath).ToLower();
+            var isImageFile = new List<string> { ".jpg", ".jpeg", ".png", ".bmp", ".gif", }.Contains(fileExtension);
+
+            if (!File.Exists(filePath) || !isImageFile)
+            {
+                return default;
+            }
+
+            try
+            {
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.UriSource = new Uri(filePath);
+                bitmap.CacheOption = BitmapCacheOption.OnLoad; // 読み込み後にファイルロックを解除
+                bitmap.EndInit();
+                return new Size((int)bitmap.Width, (int)bitmap.Height);
+            }
+            catch (Exception)
+            {
+                return default;
+            }
         }
     }
 }

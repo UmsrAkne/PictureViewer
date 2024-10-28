@@ -26,10 +26,15 @@ namespace PictureViewer.Models
 
         private string Version { get => version; set => SetProperty(ref version, value); }
 
+        public override string ToString()
+        {
+            return Title;
+        }
+
         [Conditional("RELEASE")]
         private void SetVersion()
         {
-            Version = "20241026" + "a";
+            Version = "20241028" + "a";
         }
 
         [Conditional("DEBUG")]

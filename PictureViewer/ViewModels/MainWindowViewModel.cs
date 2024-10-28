@@ -12,8 +12,6 @@ namespace PictureViewer.ViewModels
     // ReSharper disable once ClassNeverInstantiated.Global
     public class MainWindowViewModel : BindableBase
     {
-        private readonly IDialogService dialogService;
-
         public MainWindowViewModel()
         {
             SetDummyData();
@@ -21,25 +19,18 @@ namespace PictureViewer.ViewModels
 
         public MainWindowViewModel(IDialogService dialogService)
         {
-            this.dialogService = dialogService;
-            FileListViewModel = new FileListViewModel(dialogService);
+            FileListViewModel = new FileListViewModel(string.Empty, dialogService);
             SetDummyData();
         }
 
-        public TextWrapper TextWrapper { get; set; }
+        public TextWrapper TextWrapper { get; } = new ();
 
-        public FileListViewModel FileListViewModel { get; set; }
+        public FileListViewModel FileListViewModel { get; private set; }
 
         [Conditional("DEBUG")]
         private void SetDummyData()
         {
-            if (FileListViewModel == null)
-            {
-                FileListViewModel = new FileListViewModel();
-            }
-
-            FileListViewModel.CurrentDirectoryPath =
-                $"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\\test";
+            FileListViewModel ??= new FileListViewModel();
 
             FileListViewModel.FilteredListProvider.AddRange(
                 new List<ExFileInfo>()
