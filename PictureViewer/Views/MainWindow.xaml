@@ -38,6 +38,11 @@
             Key="N"
             Command="{Binding FileListViewModel.ShowTextInputDialogCommand}"
             Modifiers="Control+Shift" />
+
+        <KeyBinding
+            Key="C"
+            Command="{Binding FileListViewModel.ShowFileCopyDialogCommand}"
+            Modifiers="Control" />
     </Window.InputBindings>
 
     <Grid>

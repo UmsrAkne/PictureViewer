@@ -63,6 +63,22 @@ namespace PictureViewer.ViewModels
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
+            if (!parameters.TryGetValue(nameof(CopyableDirectories), out ObservableCollection<ExFileInfo> d))
+            {
+                return;
+            }
+
+            if (d == null)
+            {
+                return;
+            }
+
+            CopyableDirectories = d;
+            const int initialIndex = 'a';
+            for (var i = 0; i < CopyableDirectories.Count; i++)
+            {
+                CopyableDirectories[i].KeyChar = (char)(initialIndex + i);
+            }
         }
     }
 }
