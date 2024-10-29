@@ -144,6 +144,19 @@ namespace PictureViewer.ViewModels
             CurrentDirectoryPath = SelectedFileInfo.FileSystemInfo.FullName;
         });
 
+        public DelegateCommand ShowFileCopyDialogCommand => new DelegateCommand(() =>
+        {
+            var p = new DialogParameters
+            {
+                { nameof(FileCopyDialogViewModel.CopyableDirectories), CurrentDirectories },
+                {
+                    nameof(FileCopyDialogViewModel.CurrentFiles),
+                    new ObservableCollection<ExFileInfo>() { SelectedFileInfo, }
+                },
+            };
+            dialogService.ShowDialog(nameof(FileCopyDialog), p, _ => { });
+        });
+
         public DelegateCommand ShowTextInputDialogCommand => new DelegateCommand(() =>
         {
             var p = new DialogParameters { { nameof(TextInputDialogViewModel.Message), "ディレクトリを作成します。名前を入力してください。" }, };

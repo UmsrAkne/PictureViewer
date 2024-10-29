@@ -18,6 +18,7 @@ namespace PictureViewer
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterDialog<TextInputDialog, TextInputDialogViewModel>();
+            containerRegistry.RegisterDialog<FileCopyDialog, FileCopyDialogViewModel>();
         }
     }
 }
