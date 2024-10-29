@@ -63,17 +63,25 @@ namespace PictureViewer.ViewModels
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
-            if (!parameters.TryGetValue(nameof(CopyableDirectories), out ObservableCollection<ExFileInfo> d))
+            var containsKeys = parameters.ContainsKey(nameof(CopyableDirectories))
+                               && parameters.ContainsKey(nameof(CurrentFiles));
+
+            if (!containsKeys)
             {
                 return;
             }
 
-            if (d == null)
+            var d = parameters.GetValue<ObservableCollection<ExFileInfo>>(nameof(CopyableDirectories));
+            var f = parameters.GetValue<ObservableCollection<ExFileInfo>>(nameof(CurrentFiles));
+
+            if (d == null || f == null)
             {
                 return;
             }
 
             CopyableDirectories = d;
+            CurrentFiles = f;
+
             const int initialIndex = 'a';
             for (var i = 0; i < CopyableDirectories.Count; i++)
             {

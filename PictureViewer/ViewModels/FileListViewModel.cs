@@ -146,7 +146,14 @@ namespace PictureViewer.ViewModels
 
         public DelegateCommand ShowFileCopyDialogCommand => new DelegateCommand(() =>
         {
-            var p = new DialogParameters { { nameof(FileCopyDialogViewModel.CopyableDirectories), CurrentDirectories }, };
+            var p = new DialogParameters
+            {
+                { nameof(FileCopyDialogViewModel.CopyableDirectories), CurrentDirectories },
+                {
+                    nameof(FileCopyDialogViewModel.CurrentFiles),
+                    new ObservableCollection<ExFileInfo>() { SelectedFileInfo, }
+                },
+            };
             dialogService.ShowDialog(nameof(FileCopyDialog), p, _ => { });
         });
 
