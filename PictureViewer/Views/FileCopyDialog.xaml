@@ -48,11 +48,11 @@
             </ListBox.ItemContainerStyle>
 
             <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type models:ExFileInfo}">
+                <DataTemplate DataType="{x:Type models:ExDirectoryInfo}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding KeyChar}" />
+                        <TextBlock Text="{Binding KeyString}" />
                         <Border Width="0" Margin="4,0" />
-                        <TextBlock Text="{Binding FileSystemInfo.FullName}" />
+                        <TextBlock Text="{Binding FullPath}" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

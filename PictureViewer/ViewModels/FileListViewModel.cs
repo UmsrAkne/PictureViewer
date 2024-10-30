@@ -148,7 +148,13 @@ namespace PictureViewer.ViewModels
         {
             var p = new DialogParameters
             {
-                { nameof(FileCopyDialogViewModel.CopyableDirectories), CurrentDirectories },
+                {
+                    nameof(FileCopyDialogViewModel.CopyableDirectories),
+                    new ObservableCollection<ExDirectoryInfo>(
+                    CurrentDirectories
+                        .Where(d => d.IsDirectory)
+                        .Select(d => new ExDirectoryInfo((DirectoryInfo)d.FileSystemInfo)))
+                },
                 {
                     nameof(FileCopyDialogViewModel.CurrentFiles),
                     new ObservableCollection<ExFileInfo>() { SelectedFileInfo, }
