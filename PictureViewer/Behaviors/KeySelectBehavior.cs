@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Xaml.Behaviors;
@@ -37,7 +36,7 @@ namespace PictureViewer.Behaviors
                 return;
             }
 
-            vm.CopyFile(e.Key.ToString().ToLower().First());
+            vm.CopyFile(e.Key.ToString().ToLower());
         }
     }
 }

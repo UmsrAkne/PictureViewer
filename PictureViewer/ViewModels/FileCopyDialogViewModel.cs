@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using PictureViewer.Models;
 using PictureViewer.Views;
 using Prism.Commands;
@@ -12,7 +13,7 @@ namespace PictureViewer.ViewModels
     // ReSharper disable once ClassNeverInstantiated.Global
     public class FileCopyDialogViewModel : BindableBase, IDialogAware
     {
-        private ObservableCollection<ExFileInfo> copyableDirectories = new ();
+        private ObservableCollection<ExDirectoryInfo> copyableDirectories = new ();
         private ObservableCollection<ExFileInfo> currentFiles = new ();
 
         public event Action<IDialogResult> RequestClose;
@@ -25,7 +26,7 @@ namespace PictureViewer.ViewModels
             set => SetProperty(ref currentFiles, value);
         }
 
-        public ObservableCollection<ExFileInfo> CopyableDirectories
+        public ObservableCollection<ExDirectoryInfo> CopyableDirectories
         {
             get => copyableDirectories;
             set => SetProperty(ref copyableDirectories, value);
@@ -40,9 +41,9 @@ namespace PictureViewer.ViewModels
         /// 入力された prefix をインデックスに変換し、CopyableDirectories の該当インデックスのディレクトリにファイルをコピーします。
         /// </summary>
         /// <param name="prefix">インデックスに変換するプレフィックスです。変換は a = 0, b = 1 .. という具合です。</param>
-        public void CopyFile(char prefix)
+        public void CopyFile(string prefix)
         {
-            var targetIndex = prefix - 'a';
+            var targetIndex = prefix.First() - 'a';
             if (targetIndex < 0 || targetIndex >= copyableDirectories.Count)
             {
                 return;
@@ -51,7 +52,7 @@ namespace PictureViewer.ViewModels
             var dest = CopyableDirectories[targetIndex];
             foreach (var exFileInfo in CurrentFiles)
             {
-                File.Copy(exFileInfo.FileSystemInfo.FullName, dest.FileSystemInfo.FullName);
+                File.Copy(exFileInfo.FileSystemInfo.FullName, dest.FullPath);
             }
         }
 
@@ -71,7 +72,7 @@ namespace PictureViewer.ViewModels
                 return;
             }
 
-            var d = parameters.GetValue<ObservableCollection<ExFileInfo>>(nameof(CopyableDirectories));
+            var d = parameters.GetValue<ObservableCollection<ExDirectoryInfo>>(nameof(CopyableDirectories));
             var f = parameters.GetValue<ObservableCollection<ExFileInfo>>(nameof(CurrentFiles));
 
             if (d == null || f == null)
@@ -85,7 +86,7 @@ namespace PictureViewer.ViewModels
             const int initialIndex = 'a';
             for (var i = 0; i < CopyableDirectories.Count; i++)
             {
-                CopyableDirectories[i].KeyChar = (char)(initialIndex + i);
+                CopyableDirectories[i].KeyString = ((char)(initialIndex + i)).ToString();
             }
         }
     }

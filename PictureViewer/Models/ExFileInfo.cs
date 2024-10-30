@@ -13,7 +13,6 @@ namespace PictureViewer.Models
         private Rating rating = Rating.NoRating;
         private bool isSelected;
         private Size size;
-        private char keyChar;
 
         public ExFileInfo(FileSystemInfo f)
         {
@@ -55,9 +54,6 @@ namespace PictureViewer.Models
                 SetProperty(ref size, value);
             }
         }
-
-        // [NotMapped]
-        public char KeyChar { get => keyChar; set => SetProperty(ref keyChar, value); }
 
         private FileInfo FileInfo { get; set; }
 
