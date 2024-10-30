@@ -59,7 +59,10 @@
         </ListBox>
 
         <DockPanel Grid.Row="2" HorizontalAlignment="Right">
-            <Button Padding="10,0" Content="Close (Esc)" />
+            <Button
+                Padding="10,0"
+                Command="{Binding CloseCommand}"
+                Content="Close (Esc)" />
         </DockPanel>
 
     </Grid>
