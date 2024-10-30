@@ -31,10 +31,21 @@
             x:Name="ListBox"
             Grid.Row="1"
             Margin="0,5"
+            AlternationCount="2"
             ItemsSource="{Binding CopyableDirectories}">
             <i:Interaction.Behaviors>
                 <behaviors:KeySelectBehavior />
             </i:Interaction.Behaviors>
+
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Style.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                            <Setter Property="Background" Value="WhiteSmoke" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
 
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:ExFileInfo}">
