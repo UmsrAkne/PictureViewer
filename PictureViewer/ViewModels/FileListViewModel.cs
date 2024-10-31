@@ -152,7 +152,7 @@ namespace PictureViewer.ViewModels
                     nameof(FileCopyDialogViewModel.CopyableDirectories),
                     new ObservableCollection<ExDirectoryInfo>(
                     CurrentDirectories
-                        .Where(d => d.IsDirectory)
+                        .Where(d => d.IsDirectory && d.FileSystemInfo.FullName != CurrentDirectory.FileSystemInfo.FullName)
                         .Select(d => new ExDirectoryInfo((DirectoryInfo)d.FileSystemInfo)))
                 },
                 {
