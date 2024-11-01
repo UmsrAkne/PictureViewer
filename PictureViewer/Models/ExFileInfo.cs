@@ -19,7 +19,7 @@ namespace PictureViewer.Models
             if (f is FileInfo fi)
             {
                 FileInfo = fi;
-                Size = GetImageSize(fi.FullName);
+                Size = GetImageSizeFromStream(fi.FullName);
             }
             else
             {
@@ -87,7 +87,7 @@ namespace PictureViewer.Models
             RaisePropertyChanged(nameof(FileSystemInfo));
         }
 
-        private static Size GetImageSize(string filePath)
+        private static Size GetImageSizeFromStream(string filePath)
         {
             var fileExtension = Path.GetExtension(filePath).ToLower();
             var isImageFile = new List<string> { ".jpg", ".jpeg", ".png", ".bmp", ".gif", }.Contains(fileExtension);
@@ -99,15 +99,15 @@ namespace PictureViewer.Models
 
             try
             {
-                var bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.UriSource = new Uri(filePath);
-                bitmap.CacheOption = BitmapCacheOption.OnLoad; // 読み込み後にファイルロックを解除
-                bitmap.EndInit();
-                return new Size((int)bitmap.Width, (int)bitmap.Height);
+                using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+                var decoder = BitmapDecoder.Create(fs, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.None);
+                var width = decoder.Frames[0].PixelWidth;
+                var height = decoder.Frames[0].PixelHeight;
+                return new Size(width, height);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.ToString());
                 return default;
             }
         }
