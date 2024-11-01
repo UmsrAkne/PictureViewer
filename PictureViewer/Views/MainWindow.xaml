@@ -75,6 +75,7 @@
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Margin" Value="0" />
                     <Setter Property="Padding" Value="0" />
+                    <Setter Property="IsSelected" Value="{Binding IsSelected}" />
                 </Style>
             </ListBox.ItemContainerStyle>
 
@@ -86,7 +87,20 @@
                             BorderBrush="DarkGray"
                             BorderThickness="1,1,1,0"
                             CornerRadius="3">
-                            <TextBlock Margin="0" Text="{Binding FileSystemInfo.Name}" />
+                            <StackPanel>
+                                <TextBlock Margin="0" Text="{Binding FileSystemInfo.Name}" />
+                                <Border Height="3" Margin="0,2">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                    <Setter Property="Background" Value="DeepSkyBlue" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                </Border>
+                            </StackPanel>
                         </Border>
                     </StackPanel>
                 </DataTemplate>
