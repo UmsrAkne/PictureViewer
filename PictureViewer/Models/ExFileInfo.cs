@@ -56,6 +56,11 @@ namespace PictureViewer.Models
             }
         }
 
+        /// <summary>
+        /// このクラスが指すファイルに関して、サムネイルが生成済みかを表します。
+        /// </summary>
+        public bool ThumbnailGenerated { get; set; }
+
         private FileInfo FileInfo { get; set; }
 
         private DirectoryInfo DirectoryInfo { get; set; }
