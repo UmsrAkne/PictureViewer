@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Drawing;
 using System.IO;
 using System.Windows.Media;
@@ -14,6 +16,10 @@ namespace PictureViewer.Models
         private Rating rating = Rating.NoRating;
         private bool isSelected;
         private Size size;
+
+        public ExFileInfo()
+        {
+        }
 
         public ExFileInfo(FileSystemInfo f)
         {
@@ -30,8 +36,14 @@ namespace PictureViewer.Models
             FileSystemInfo = f;
         }
 
+        [Key]
+        [Required]
+        public int Id { get; set; }
+
+        [NotMapped]
         public bool IsDirectory => DirectoryInfo != null;
 
+        [NotMapped]
         public FileSystemInfo FileSystemInfo { get; private set; }
 
         public bool IsViewed { get => isViewed; set => SetProperty(ref isViewed, value); }
@@ -44,7 +56,7 @@ namespace PictureViewer.Models
 
         public int Height { get; set; }
 
-        // [NotMapped]
+        [NotMapped]
         public Size Size
         {
             get => size;
@@ -55,6 +67,11 @@ namespace PictureViewer.Models
                 SetProperty(ref size, value);
             }
         }
+
+        /// <summary>
+        /// このクラスが指すファイルに関して、サムネイルが生成済みかを表します。
+        /// </summary>
+        public bool ThumbnailGenerated { get; set; }
 
         private FileInfo FileInfo { get; set; }
 
