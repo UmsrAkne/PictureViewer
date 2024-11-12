@@ -34,6 +34,11 @@ namespace PictureViewer.Models
             }
 
             FileSystemInfo = f;
+
+            if (Size.Width != 0)
+            {
+                Thumbnail = GenerateThumbnail(FileSystemInfo.FullName, 80);
+            }
         }
 
         [Key]
@@ -72,6 +77,9 @@ namespace PictureViewer.Models
         /// このクラスが指すファイルに関して、サムネイルが生成済みかを表します。
         /// </summary>
         public bool ThumbnailGenerated { get; set; }
+
+        [NotMapped]
+        public BitmapSource Thumbnail { get; }
 
         private FileInfo FileInfo { get; set; }
 

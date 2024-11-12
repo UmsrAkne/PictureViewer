@@ -164,6 +164,11 @@
                         </Border>
                         <Border Width="0" Margin="3,0" />
 
+                        <Image
+                            Width="100"
+                            Height="80"
+                            Source="{Binding Thumbnail}" />
+
                         <TextBlock
                             Width="15"
                             Text="{Binding Rating, Converter={StaticResource RatingConverter}}"
