@@ -43,6 +43,7 @@ namespace PictureViewer.Models.Dbs
                 return value;
             }
 
+            exFileInfo.Thumbnail = ExFileInfo.GenerateThumbnail(exFileInfo.FileSystemInfo.FullName, 80);
             await imageFileRepository.AddAsync(exFileInfo);
             return exFileInfo;
         }

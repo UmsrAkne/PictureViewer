@@ -45,6 +45,7 @@ namespace PictureViewer.ViewModels
             };
 
             this.dialogService = dialogService;
+            this.imageFileService = imageFileService;
         }
 
         public FilteredListProvider FilteredListProvider { get; set; } = new ();
@@ -56,7 +57,7 @@ namespace PictureViewer.ViewModels
             {
                 try
                 {
-                    LoadFileAndDirectories(value);
+                    _ = LoadFileAndDirectories(value);
                     CurrentDirectory.SetFileSystemInfo(new DirectoryInfo(value));
                 }
                 catch (Exception e)
@@ -207,15 +208,17 @@ namespace PictureViewer.ViewModels
             fileSystemWatcher.Dispose();
         }
 
-        private void LoadFileAndDirectories(string directoryPath)
+        private async Task LoadFileAndDirectories(string directoryPath)
         {
             var f = Directory.GetFiles(directoryPath)
-                .Select(p => new ExFileInfo(new FileInfo(p)));
+                .Select(p => imageFileService.GetOrCreateExFileAsync(p));
+
+            var fileResults = await Task.WhenAll(f);
 
             var d = Directory.GetDirectories(directoryPath)
                 .Select(p => new ExFileInfo(new DirectoryInfo(p)));
 
-            FilteredListProvider.Replace(f.Concat(d).ToList());
+            FilteredListProvider.Replace(fileResults.Concat(d).ToList());
         }
     }
 }
