@@ -27,10 +27,12 @@ namespace PictureViewer.Models
             {
                 FileInfo = fi;
                 Size = GetImageSizeFromStream(fi.FullName);
+                ParentDirectoryPath = FileInfo.Directory?.FullName;
             }
             else
             {
                 DirectoryInfo = (DirectoryInfo)f;
+                ParentDirectoryPath = DirectoryInfo.Parent?.FullName;
             }
 
             FileSystemInfo = f;
@@ -38,6 +40,11 @@ namespace PictureViewer.Models
             if (Size.Width != 0)
             {
                 Thumbnail = GenerateThumbnail(FileSystemInfo.FullName, 80);
+            }
+
+            if (string.IsNullOrWhiteSpace(ParentDirectoryPath))
+            {
+                ParentDirectoryPath = string.Empty;
             }
         }
 
@@ -60,6 +67,8 @@ namespace PictureViewer.Models
         public int Width { get; set; }
 
         public int Height { get; set; }
+
+        public string ParentDirectoryPath { get; set; } = string.Empty;
 
         [NotMapped]
         public Size Size
