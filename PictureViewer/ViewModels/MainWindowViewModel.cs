@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using PictureViewer.Models;
+using PictureViewer.Models.Dbs;
+using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 
@@ -17,9 +19,9 @@ namespace PictureViewer.ViewModels
             SetDummyData();
         }
 
-        public MainWindowViewModel(IDialogService dialogService)
+        public MainWindowViewModel(IDialogService dialogService, IContainerProvider containerProvider)
         {
-            FileListViewModel = new FileListViewModel(string.Empty, dialogService);
+            FileListViewModel = new FileListViewModel(string.Empty, dialogService, containerProvider.Resolve<ImageFileService>());
             SetDummyData();
         }
 

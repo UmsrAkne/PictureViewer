@@ -2,8 +2,10 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using PictureViewer.Models;
+using PictureViewer.Models.Dbs;
 using PictureViewer.Views;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -21,8 +23,9 @@ namespace PictureViewer.ViewModels
         private string currentImageFilePath;
         private ObservableCollection<ExFileInfo> currentDirectories = new ();
         private ExFileInfo currentDirectory;
+        private ImageFileService imageFileService;
 
-        public FileListViewModel(string defaultDirectoryPath = null, IDialogService dialogService = null)
+        public FileListViewModel(string defaultDirectoryPath = null, IDialogService dialogService = null, ImageFileService imageFileService = null)
         {
             CurrentDirectories.Add(!string.IsNullOrWhiteSpace(defaultDirectoryPath)
                 ? new ExFileInfo(new DirectoryInfo(defaultDirectoryPath))
