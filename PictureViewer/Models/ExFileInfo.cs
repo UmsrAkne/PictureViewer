@@ -120,6 +120,21 @@ namespace PictureViewer.Models
         }
 
         /// <summary>
+        /// BitmapSource を指定のパスに PNG 形式で保存します。
+        /// </summary>
+        /// <param name="bitmapSource">保存する BitmapSource</param>
+        /// <param name="filePath">保存先のファイルパス</param>
+        public static void SaveBitmapSourceToFile(BitmapSource bitmapSource, string filePath)
+        {
+            var encoder = new PngBitmapEncoder(); // PNG エンコーダを使用
+            encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+
+            // 指定のパスにファイルを保存
+            using var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
+            encoder.Save(fs);
+        }
+
+        /// <summary>
         /// このインスタンスが保持している FileInfo または DirectoryInfo を置き換えます。
         /// </summary>
         /// <param name="f">セットする FileInfo or DirectoryInfo</param>
@@ -170,21 +185,6 @@ namespace PictureViewer.Models
                 Console.WriteLine(e.ToString());
                 return default;
             }
-        }
-
-        /// <summary>
-        /// BitmapSource を指定のパスに PNG 形式で保存します。
-        /// </summary>
-        /// <param name="bitmapSource">保存する BitmapSource</param>
-        /// <param name="filePath">保存先のファイルパス</param>
-        private static void SaveBitmapSourceToFile(BitmapSource bitmapSource, string filePath)
-        {
-            var encoder = new PngBitmapEncoder(); // PNG エンコーダを使用
-            encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
-
-            // 指定のパスにファイルを保存
-            using var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
-            encoder.Save(fs);
         }
     }
 }

@@ -31,6 +31,7 @@ namespace PictureViewer.Models.Dbs
         /// <returns>
         /// 引数に渡された imageFilePath がデータベースに登録されているかを確認。<br/>
         /// 登録済みならばデータベースから値を取り出し、未登録ならば新規生成したインスタンスをデータベースに登録したあとに返します。<br/>
+        /// また、未登録の場合はサムネイルの生成を同時に行います。
         /// </returns>
         public async Task<ExFileInfo> GetOrCreateExFileAsync(string imageFilePath)
         {
@@ -44,6 +45,16 @@ namespace PictureViewer.Models.Dbs
             }
 
             exFileInfo.Thumbnail = ExFileInfo.GenerateThumbnail(exFileInfo.FileSystemInfo.FullName, 80);
+
+            var thumbnailDirectory = new DirectoryInfo($@"Thumbnails\{new DirectoryInfo(exFileInfo.ParentDirectoryPath).Name}");
+            if (!thumbnailDirectory.Exists)
+            {
+                thumbnailDirectory.Create();
+            }
+
+            ExFileInfo.SaveBitmapSourceToFile(exFileInfo.Thumbnail, $"{thumbnailDirectory.FullName}\\{exFileInfo.FileSystemInfo.Name}");
+            exFileInfo.ThumbnailGenerated = true;
+
             await imageFileRepository.AddAsync(exFileInfo);
             return exFileInfo;
         }
