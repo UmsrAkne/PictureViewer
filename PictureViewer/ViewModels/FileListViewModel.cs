@@ -2,8 +2,10 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using PictureViewer.Models;
+using PictureViewer.Models.Dbs;
 using PictureViewer.Views;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -21,8 +23,9 @@ namespace PictureViewer.ViewModels
         private string currentImageFilePath;
         private ObservableCollection<ExFileInfo> currentDirectories = new ();
         private ExFileInfo currentDirectory;
+        private ImageFileService imageFileService;
 
-        public FileListViewModel(string defaultDirectoryPath = null, IDialogService dialogService = null)
+        public FileListViewModel(string defaultDirectoryPath = null, IDialogService dialogService = null, ImageFileService imageFileService = null)
         {
             CurrentDirectories.Add(!string.IsNullOrWhiteSpace(defaultDirectoryPath)
                 ? new ExFileInfo(new DirectoryInfo(defaultDirectoryPath))
@@ -42,6 +45,7 @@ namespace PictureViewer.ViewModels
             };
 
             this.dialogService = dialogService;
+            this.imageFileService = imageFileService;
         }
 
         public FilteredListProvider FilteredListProvider { get; set; } = new ();
@@ -53,7 +57,7 @@ namespace PictureViewer.ViewModels
             {
                 try
                 {
-                    LoadFileAndDirectories(value);
+                    _ = LoadFileAndDirectories(value);
                     CurrentDirectory.SetFileSystemInfo(new DirectoryInfo(value));
                 }
                 catch (Exception e)
@@ -204,15 +208,17 @@ namespace PictureViewer.ViewModels
             fileSystemWatcher.Dispose();
         }
 
-        private void LoadFileAndDirectories(string directoryPath)
+        private async Task LoadFileAndDirectories(string directoryPath)
         {
             var f = Directory.GetFiles(directoryPath)
-                .Select(p => new ExFileInfo(new FileInfo(p)));
+                .Select(p => imageFileService.GetOrCreateExFileAsync(p));
+
+            var fileResults = await Task.WhenAll(f);
 
             var d = Directory.GetDirectories(directoryPath)
                 .Select(p => new ExFileInfo(new DirectoryInfo(p)));
 
-            FilteredListProvider.Replace(f.Concat(d).ToList());
+            FilteredListProvider.Replace(fileResults.Concat(d).ToList());
         }
     }
 }

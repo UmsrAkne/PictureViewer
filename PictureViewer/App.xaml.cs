@@ -1,8 +1,10 @@
 ﻿using System.Windows;
+using PictureViewer.Models;
 using PictureViewer.Models.Dbs;
 using PictureViewer.ViewModels;
 using PictureViewer.Views;
 using Prism.Ioc;
+using Prism.Services.Dialogs;
 
 namespace PictureViewer
 {
@@ -24,6 +26,14 @@ namespace PictureViewer
 
             var d = Container.Resolve<DatabaseContext>();
             d.Database.EnsureCreated();
+
+            var repo = new Repository<ExFileInfo>(d);
+            containerRegistry.RegisterInstance(repo);
+
+            var imageFileService = new ImageFileService(repo);
+            containerRegistry.RegisterInstance(imageFileService);
+
+            containerRegistry.Register<IDialogService, DialogService>();
         }
     }
 }

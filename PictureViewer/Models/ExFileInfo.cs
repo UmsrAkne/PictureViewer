@@ -16,6 +16,7 @@ namespace PictureViewer.Models
         private Rating rating = Rating.NoRating;
         private bool isSelected;
         private Size size;
+        private BitmapSource thumbnail1;
 
         public ExFileInfo()
         {
@@ -27,18 +28,22 @@ namespace PictureViewer.Models
             {
                 FileInfo = fi;
                 Size = GetImageSizeFromStream(fi.FullName);
+                ParentDirectoryPath = FileInfo.Directory?.FullName;
             }
             else
             {
                 DirectoryInfo = (DirectoryInfo)f;
+                ParentDirectoryPath = DirectoryInfo.Parent?.FullName;
             }
 
             FileSystemInfo = f;
 
-            if (Size.Width != 0)
+            if (string.IsNullOrWhiteSpace(ParentDirectoryPath))
             {
-                Thumbnail = GenerateThumbnail(FileSystemInfo.FullName, 80);
+                ParentDirectoryPath = string.Empty;
             }
+
+            FullPath = FileSystemInfo.FullName;
         }
 
         [Key]
@@ -61,6 +66,8 @@ namespace PictureViewer.Models
 
         public int Height { get; set; }
 
+        public string ParentDirectoryPath { get; set; } = string.Empty;
+
         [NotMapped]
         public Size Size
         {
@@ -78,12 +85,64 @@ namespace PictureViewer.Models
         /// </summary>
         public bool ThumbnailGenerated { get; set; }
 
+        public string FullPath { get; set; } = string.Empty;
+
         [NotMapped]
-        public BitmapSource Thumbnail { get; }
+        public BitmapSource Thumbnail { get => thumbnail1; set => SetProperty(ref thumbnail1, value); }
 
         private FileInfo FileInfo { get; set; }
 
         private DirectoryInfo DirectoryInfo { get; set; }
+
+        public FileInfo GetThumbnailFileInfo()
+        {
+            var currentDirectory = new DirectoryInfo(ParentDirectoryPath);
+            return new FileInfo($@"Thumbnails\{currentDirectory.Name}\\{FileSystemInfo.Name}");
+        }
+
+        /// <summary>
+        /// 指定した画像ファイルを読み込み、指定された縦サイズのサムネイルを生成します。
+        /// </summary>
+        /// <param name="filePath">画像ファイルのパス</param>
+        /// <param name="desiredHeight">生成するサムネイルの縦サイズ（ピクセル単位）</param>
+        /// <returns>サムネイル画像の BitmapSource オブジェクト</returns>
+        public static BitmapSource GenerateThumbnail(string filePath, int desiredHeight)
+        {
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException("指定された画像ファイルが見つかりません。", filePath);
+            }
+
+            var originalImage = new BitmapImage();
+            originalImage.BeginInit();
+            originalImage.UriSource = new Uri(filePath);
+            originalImage.CacheOption = BitmapCacheOption.OnLoad; // ファイルを完全に読み込む
+            originalImage.EndInit();
+
+            // 元の画像の縦横比を保ちながら、縦サイズに基づいて横サイズを計算
+            var scale = (double)desiredHeight / originalImage.PixelHeight;
+
+            // サムネイル画像の生成
+            var thumbnail = new TransformedBitmap(originalImage, new ScaleTransform(scale, scale));
+
+            // SaveBitmapSourceToFile(thumbnail, outputPath);
+            return thumbnail;
+        }
+
+        /// <summary>
+        /// BitmapSource を指定のパスに PNG 形式で保存します。
+        /// </summary>
+        /// <param name="bitmapSource">保存する BitmapSource</param>
+        /// <param name="filePath">保存先のファイルパス</param>
+        public static void SaveBitmapSourceToFile(BitmapSource bitmapSource, string filePath)
+        {
+            var encoder = new PngBitmapEncoder(); // PNG エンコーダを使用
+            encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+
+            // 指定のパスにファイルを保存
+            using var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
+            encoder.Save(fs);
+        }
 
         /// <summary>
         /// このインスタンスが保持している FileInfo または DirectoryInfo を置き換えます。
@@ -136,50 +195,6 @@ namespace PictureViewer.Models
                 Console.WriteLine(e.ToString());
                 return default;
             }
-        }
-
-        /// <summary>
-        /// 指定した画像ファイルを読み込み、指定された縦サイズのサムネイルを生成します。
-        /// </summary>
-        /// <param name="filePath">画像ファイルのパス</param>
-        /// <param name="desiredHeight">生成するサムネイルの縦サイズ（ピクセル単位）</param>
-        /// <returns>サムネイル画像の BitmapSource オブジェクト</returns>
-        private static BitmapSource GenerateThumbnail(string filePath, int desiredHeight)
-        {
-            if (!File.Exists(filePath))
-            {
-                throw new FileNotFoundException("指定された画像ファイルが見つかりません。", filePath);
-            }
-
-            var originalImage = new BitmapImage();
-            originalImage.BeginInit();
-            originalImage.UriSource = new Uri(filePath);
-            originalImage.CacheOption = BitmapCacheOption.OnLoad; // ファイルを完全に読み込む
-            originalImage.EndInit();
-
-            // 元の画像の縦横比を保ちながら、縦サイズに基づいて横サイズを計算
-            var scale = (double)desiredHeight / originalImage.PixelHeight;
-
-            // サムネイル画像の生成
-            var thumbnail = new TransformedBitmap(originalImage, new ScaleTransform(scale, scale));
-
-            // SaveBitmapSourceToFile(thumbnail, outputPath);
-            return thumbnail;
-        }
-
-        /// <summary>
-        /// BitmapSource を指定のパスに PNG 形式で保存します。
-        /// </summary>
-        /// <param name="bitmapSource">保存する BitmapSource</param>
-        /// <param name="filePath">保存先のファイルパス</param>
-        private static void SaveBitmapSourceToFile(BitmapSource bitmapSource, string filePath)
-        {
-            var encoder = new PngBitmapEncoder(); // PNG エンコーダを使用
-            encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
-
-            // 指定のパスにファイルを保存
-            using var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
-            encoder.Save(fs);
         }
     }
 }
