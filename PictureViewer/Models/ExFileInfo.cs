@@ -42,6 +42,8 @@ namespace PictureViewer.Models
             {
                 ParentDirectoryPath = string.Empty;
             }
+
+            FullPath = FileSystemInfo.FullName;
         }
 
         [Key]
@@ -82,6 +84,8 @@ namespace PictureViewer.Models
         /// このクラスが指すファイルに関して、サムネイルが生成済みかを表します。
         /// </summary>
         public bool ThumbnailGenerated { get; set; }
+
+        public string FullPath { get; set; } = string.Empty;
 
         [NotMapped]
         public BitmapSource Thumbnail { get => thumbnail1; set => SetProperty(ref thumbnail1, value); }
