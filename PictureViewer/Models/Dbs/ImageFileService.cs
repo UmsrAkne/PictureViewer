@@ -46,13 +46,14 @@ namespace PictureViewer.Models.Dbs
 
             exFileInfo.Thumbnail = ExFileInfo.GenerateThumbnail(exFileInfo.FileSystemInfo.FullName, 80);
 
-            var thumbnailDirectory = new DirectoryInfo($@"Thumbnails\{new DirectoryInfo(exFileInfo.ParentDirectoryPath).Name}");
-            if (!thumbnailDirectory.Exists)
+            var thumbnailInfo = exFileInfo.GetThumbnailFileInfo();
+
+            if (thumbnailInfo.Directory is { Exists: false, })
             {
-                thumbnailDirectory.Create();
+                thumbnailInfo.Directory.Create();
             }
 
-            ExFileInfo.SaveBitmapSourceToFile(exFileInfo.Thumbnail, $"{thumbnailDirectory.FullName}\\{exFileInfo.FileSystemInfo.Name}");
+            ExFileInfo.SaveBitmapSourceToFile(exFileInfo.Thumbnail, thumbnailInfo.FullName);
             exFileInfo.ThumbnailGenerated = true;
 
             await imageFileRepository.AddAsync(exFileInfo);

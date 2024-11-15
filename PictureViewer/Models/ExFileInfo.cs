@@ -90,6 +90,12 @@ namespace PictureViewer.Models
 
         private DirectoryInfo DirectoryInfo { get; set; }
 
+        public FileInfo GetThumbnailFileInfo()
+        {
+            var currentDirectory = new DirectoryInfo(ParentDirectoryPath);
+            return new FileInfo($@"Thumbnails\{currentDirectory.Name}\\{FileSystemInfo.Name}");
+        }
+
         /// <summary>
         /// 指定した画像ファイルを読み込み、指定された縦サイズのサムネイルを生成します。
         /// </summary>
