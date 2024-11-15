@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace PictureViewer.Models.Dbs
 {
@@ -37,10 +39,15 @@ namespace PictureViewer.Models.Dbs
         {
             var exFileInfo = new ExFileInfo(new FileInfo(imageFilePath));
             var all = await imageFileRepository.GetAllAsync();
-            var value = all.FirstOrDefault(f => f.FileSystemInfo.FullName == exFileInfo.FileSystemInfo.FullName);
+            var value = all.FirstOrDefault(f => f.FullPath == exFileInfo.FileSystemInfo.FullName);
 
-            if (value != null)
+            if (value != null && value.Width != 0)
             {
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.UriSource = new Uri(value.GetThumbnailFileInfo().FullName, UriKind.Absolute);
+                bitmap.EndInit();
+                value.Thumbnail = bitmap;
                 return value;
             }
 
