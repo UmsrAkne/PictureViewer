@@ -57,7 +57,7 @@ namespace PictureViewer.ViewModels
                     new (new DirectoryInfo("testDirectory8.png")),
                 });
 
-            FileListViewModel.CurrentDirectories.AddRange(new List<ExFileInfo>()
+            FileListViewModel.DirectoryListViewModel.Directories.AddRange(new List<ExFileInfo>()
             {
                 new (new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\\test")),
                 new (new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)}\\images")),

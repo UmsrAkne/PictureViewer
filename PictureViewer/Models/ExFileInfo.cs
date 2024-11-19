@@ -90,6 +90,21 @@ namespace PictureViewer.Models
         [NotMapped]
         public BitmapSource Thumbnail { get => thumbnail1; set => SetProperty(ref thumbnail1, value); }
 
+        [NotMapped]
+        public bool IsImageFile
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(FullPath) || IsDirectory)
+                {
+                    return false;
+                }
+
+                var extension = Path.GetExtension(FullPath);
+                return new List<string> { ".jpg", ".jpeg", ".png", ".bmp", ".gif", }.Contains(extension);
+            }
+        }
+
         private FileInfo FileInfo { get; set; }
 
         private DirectoryInfo DirectoryInfo { get; set; }
