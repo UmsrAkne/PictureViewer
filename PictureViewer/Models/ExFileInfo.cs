@@ -90,15 +90,24 @@ namespace PictureViewer.Models
         [NotMapped]
         public BitmapSource Thumbnail { get => thumbnail1; set => SetProperty(ref thumbnail1, value); }
 
+        [NotMapped]
+        public bool IsImageFile
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(FullPath) || IsDirectory)
+                {
+                    return false;
+                }
+
+                var extension = Path.GetExtension(FullPath);
+                return new List<string> { ".jpg", ".jpeg", ".png", ".bmp", ".gif", }.Contains(extension);
+            }
+        }
+
         private FileInfo FileInfo { get; set; }
 
         private DirectoryInfo DirectoryInfo { get; set; }
-
-        public FileInfo GetThumbnailFileInfo()
-        {
-            var currentDirectory = new DirectoryInfo(ParentDirectoryPath);
-            return new FileInfo($@"Thumbnails\{currentDirectory.Name}\\{FileSystemInfo.Name}");
-        }
 
         /// <summary>
         /// 指定した画像ファイルを読み込み、指定された縦サイズのサムネイルを生成します。
@@ -142,6 +151,12 @@ namespace PictureViewer.Models
             // 指定のパスにファイルを保存
             using var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
             encoder.Save(fs);
+        }
+
+        public FileInfo GetThumbnailFileInfo()
+        {
+            var currentDirectory = new DirectoryInfo(ParentDirectoryPath);
+            return new FileInfo($@"Thumbnails\{currentDirectory.Name}\\{FileSystemInfo.Name}");
         }
 
         /// <summary>
