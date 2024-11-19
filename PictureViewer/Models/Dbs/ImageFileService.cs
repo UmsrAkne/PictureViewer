@@ -53,6 +53,11 @@ namespace PictureViewer.Models.Dbs
                 return value;
             }
 
+            if (!exFileInfo.IsImageFile)
+            {
+                return exFileInfo;
+            }
+
             exFileInfo.Thumbnail = ExFileInfo.GenerateThumbnail(exFileInfo.FileSystemInfo.FullName, 80);
 
             var thumbnailInfo = exFileInfo.GetThumbnailFileInfo();
