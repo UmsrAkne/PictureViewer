@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using PictureViewer.Commands;
 using PictureViewer.Models;
 using PictureViewer.Models.Dbs;
 using PictureViewer.Views;
@@ -134,6 +135,20 @@ namespace PictureViewer.ViewModels
                     throw;
                 }
             });
+        });
+
+        /// <summary>
+        /// DirectoryListViewModel.CurrentPath に入力されているパスからファイルとディレクトリをロードします。<br/>
+        /// パスが空文字や Null の場合は動作を打ち切ります。
+        /// </summary>
+        public AsyncDelegateCommand LoadFilesCommand => new (async () =>
+        {
+            if (string.IsNullOrWhiteSpace(DirectoryListViewModel.CurrentPath))
+            {
+                return;
+            }
+
+            await LoadFileAndDirectories(DirectoryListViewModel.CurrentPath);
         });
 
         public void Dispose()

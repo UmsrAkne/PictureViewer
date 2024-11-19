@@ -65,6 +65,13 @@
             Grid.ColumnSpan="3"
             ItemsSource="{Binding FileListViewModel.DirectoryListViewModel.Directories}"
             SelectedItem="{Binding FileListViewModel.DirectoryListViewModel.SelectedItem}">
+
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding FileListViewModel.LoadFilesCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" />

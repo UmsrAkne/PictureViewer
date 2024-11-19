@@ -41,6 +41,8 @@ namespace PictureViewer.Models.Dbs
             var all = await imageFileRepository.GetAllAsync();
             var value = all.FirstOrDefault(f => f.FullPath == exFileInfo.FileSystemInfo.FullName);
 
+            value?.SetFileSystemInfo(new FileInfo(imageFilePath));
+
             if (value != null && value.Width != 0)
             {
                 var bitmap = new BitmapImage();

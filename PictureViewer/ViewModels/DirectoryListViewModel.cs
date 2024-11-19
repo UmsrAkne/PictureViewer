@@ -23,7 +23,15 @@ namespace PictureViewer.ViewModels
         /// <summary>
         /// Directories プロパティに含まれるアイテムのうち、現在選択している ExFileInfo を取得・設定します。
         /// </summary>
-        public ExFileInfo SelectedItem { get => selectedItem; set => SetProperty(ref selectedItem, value); }
+        public ExFileInfo SelectedItem
+        {
+            get => selectedItem;
+            set
+            {
+                CurrentPath = value?.FullPath;
+                SetProperty(ref selectedItem, value);
+            }
+        }
 
         /// <summary>
         /// 現在選択しているディレクトリのフルパスを取得・設定します。
