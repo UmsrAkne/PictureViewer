@@ -25,12 +25,12 @@
     <Window.InputBindings>
         <KeyBinding
             Key="T"
-            Command="{Binding FileListViewModel.AddCurrentDirectoryCommand}"
+            Command="{Binding FileListViewModel.DirectoryListViewModel.AddCurrentDirectoryCommand}"
             Modifiers="Control" />
 
         <KeyBinding
             Key="W"
-            Command="{Binding FileListViewModel.CloseCurrentDirectoryCommand}"
+            Command="{Binding FileListViewModel.DirectoryListViewModel.CloseCurrentDirectoryCommand}"
             CommandParameter="{Binding ElementName=TabListBox, Path=SelectedItem}"
             Modifiers="Control" />
 

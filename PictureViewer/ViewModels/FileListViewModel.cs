@@ -76,29 +76,6 @@ namespace PictureViewer.ViewModels
             private set => SetProperty(ref currentImageFilePath, value);
         }
 
-        public DelegateCommand AddCurrentDirectoryCommand => new DelegateCommand(() =>
-        {
-            var vm = DirectoryListViewModel;
-            vm.Directories.Add(new ExFileInfo(new DirectoryInfo(vm.CurrentPath)));
-        });
-
-        public DelegateCommand<ExFileInfo> CloseCurrentDirectoryCommand => new DelegateCommand<ExFileInfo>((param) =>
-        {
-            var vm = DirectoryListViewModel;
-            if (param == null || !vm.Directories.Contains(param))
-            {
-                return;
-            }
-
-            var index = vm.Directories.IndexOf(param);
-            vm.Directories.RemoveAt(index);
-
-            if (vm.Directories.Count > 0)
-            {
-                vm.SelectedItem = vm.Directories[Math.Min(vm.Directories.Count - 1, index)];
-            }
-        });
-
         public DelegateCommand<ExFileInfo> OpenDirectoryCommand => new ((param) =>
         {
             if (param is not { IsDirectory: true, })
