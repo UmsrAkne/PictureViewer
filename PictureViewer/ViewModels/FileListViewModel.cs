@@ -18,21 +18,19 @@ namespace PictureViewer.ViewModels
     {
         private readonly IDialogService dialogService;
         private readonly FileSystemWatcher fileSystemWatcher = new ();
-        private string currentDirectoryPath;
         private ExFileInfo selectedFileInfo;
         private string currentImageFilePath;
-        private ObservableCollection<ExFileInfo> currentDirectories = new ();
-        private ExFileInfo currentDirectory;
         private ImageFileService imageFileService;
+        private DirectoryListViewModel directoryListViewModel = new ();
 
         public FileListViewModel(string defaultDirectoryPath = null, IDialogService dialogService = null, ImageFileService imageFileService = null)
         {
-            CurrentDirectories.Add(!string.IsNullOrWhiteSpace(defaultDirectoryPath)
+            DirectoryListViewModel.Directories.Add(!string.IsNullOrWhiteSpace(defaultDirectoryPath)
                 ? new ExFileInfo(new DirectoryInfo(defaultDirectoryPath))
                 : new ExFileInfo(
                     new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.MyPictures)}")));
 
-            CurrentDirectory = CurrentDirectories.First();
+            DirectoryListViewModel.SelectedItem = DirectoryListViewModel.Directories.First();
 
             fileSystemWatcher.Filter = "*.png";
             fileSystemWatcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.Size;
@@ -50,48 +48,10 @@ namespace PictureViewer.ViewModels
 
         public FilteredListProvider FilteredListProvider { get; set; } = new ();
 
-        public string CurrentDirectoryPath
+        public DirectoryListViewModel DirectoryListViewModel
         {
-            get => currentDirectoryPath;
-            set
-            {
-                try
-                {
-                    _ = LoadFileAndDirectories(value);
-                    CurrentDirectory.SetFileSystemInfo(new DirectoryInfo(value));
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("ディレクトリの読み取りに失敗しました。");
-                    Console.WriteLine(e);
-                    fileSystemWatcher.EnableRaisingEvents = false;
-                    return;
-                }
-
-                SetProperty(ref currentDirectoryPath, value);
-                fileSystemWatcher.Path = value;
-                fileSystemWatcher.EnableRaisingEvents = true;
-            }
-        }
-
-        public ObservableCollection<ExFileInfo> CurrentDirectories
-        {
-            get => currentDirectories;
-            set => SetProperty(ref currentDirectories, value);
-        }
-
-        public ExFileInfo CurrentDirectory
-        {
-            get => currentDirectory;
-            set
-            {
-                if (value != null)
-                {
-                    CurrentDirectoryPath = value.FileSystemInfo.FullName;
-                }
-
-                SetProperty(ref currentDirectory, value);
-            }
+            get => directoryListViewModel;
+            set => SetProperty(ref directoryListViewModel, value);
         }
 
         public ExFileInfo SelectedFileInfo
@@ -118,22 +78,24 @@ namespace PictureViewer.ViewModels
 
         public DelegateCommand AddCurrentDirectoryCommand => new DelegateCommand(() =>
         {
-            CurrentDirectories.Add(new ExFileInfo(new DirectoryInfo(CurrentDirectoryPath)));
+            var vm = DirectoryListViewModel;
+            vm.Directories.Add(new ExFileInfo(new DirectoryInfo(vm.CurrentPath)));
         });
 
         public DelegateCommand<ExFileInfo> CloseCurrentDirectoryCommand => new DelegateCommand<ExFileInfo>((param) =>
         {
-            if (param == null || !CurrentDirectories.Contains(param))
+            var vm = DirectoryListViewModel;
+            if (param == null || !vm.Directories.Contains(param))
             {
                 return;
             }
 
-            var index = CurrentDirectories.IndexOf(param);
-            CurrentDirectories.RemoveAt(index);
+            var index = vm.Directories.IndexOf(param);
+            vm.Directories.RemoveAt(index);
 
-            if (CurrentDirectories.Count > 0)
+            if (vm.Directories.Count > 0)
             {
-                CurrentDirectory = CurrentDirectories[Math.Min(CurrentDirectories.Count - 1, index)];
+                vm.SelectedItem = vm.Directories[Math.Min(vm.Directories.Count - 1, index)];
             }
         });
 
@@ -145,7 +107,7 @@ namespace PictureViewer.ViewModels
             }
 
             SelectedFileInfo.SetFileSystemInfo(param.FileSystemInfo);
-            CurrentDirectoryPath = SelectedFileInfo.FileSystemInfo.FullName;
+            DirectoryListViewModel.CurrentPath = SelectedFileInfo.FileSystemInfo.FullName;
         });
 
         public DelegateCommand ShowFileCopyDialogCommand => new DelegateCommand(() =>
@@ -155,8 +117,8 @@ namespace PictureViewer.ViewModels
                 {
                     nameof(FileCopyDialogViewModel.CopyableDirectories),
                     new ObservableCollection<ExDirectoryInfo>(
-                    CurrentDirectories
-                        .Where(d => d.IsDirectory && d.FileSystemInfo.FullName != CurrentDirectory.FileSystemInfo.FullName)
+                    DirectoryListViewModel.Directories
+                        .Where(d => d.IsDirectory && d.FileSystemInfo.FullName != DirectoryListViewModel.SelectedItem.FileSystemInfo.FullName)
                         .Select(d => new ExDirectoryInfo((DirectoryInfo)d.FileSystemInfo)))
                 },
                 {
@@ -185,7 +147,7 @@ namespace PictureViewer.ViewModels
                         return;
                     }
 
-                    var info = new DirectoryInfo($"{CurrentDirectoryPath}\\{t}");
+                    var info = new DirectoryInfo($"{DirectoryListViewModel.CurrentPath}\\{t}");
                     Directory.CreateDirectory(info.FullName);
                     FilteredListProvider.Add(new ExFileInfo(info));
                 }

@@ -63,8 +63,8 @@
             Grid.Row="0"
             Grid.Column="0"
             Grid.ColumnSpan="3"
-            ItemsSource="{Binding FileListViewModel.CurrentDirectories}"
-            SelectedItem="{Binding FileListViewModel.CurrentDirectory}">
+            ItemsSource="{Binding FileListViewModel.DirectoryListViewModel.Directories}"
+            SelectedItem="{Binding FileListViewModel.DirectoryListViewModel.SelectedItem}">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" />
@@ -111,7 +111,7 @@
             Grid.Row="1"
             Grid.Column="0"
             Grid.ColumnSpan="3">
-            <TextBox Text="{Binding FileListViewModel.CurrentDirectoryPath}" />
+            <TextBox Text="{Binding FileListViewModel.DirectoryListViewModel.CurrentPath}" />
         </StackPanel>
 
         <ListBox
