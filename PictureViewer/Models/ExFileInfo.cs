@@ -90,21 +90,6 @@ namespace PictureViewer.Models
         [NotMapped]
         public BitmapSource Thumbnail { get => thumbnail1; set => SetProperty(ref thumbnail1, value); }
 
-        [NotMapped]
-        public bool IsImageFile
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(FullPath) || IsDirectory)
-                {
-                    return false;
-                }
-
-                var extension = Path.GetExtension(FullPath);
-                return new List<string> { ".jpg", ".jpeg", ".png", ".bmp", ".gif", }.Contains(extension);
-            }
-        }
-
         private FileInfo FileInfo { get; set; }
 
         private DirectoryInfo DirectoryInfo { get; set; }
@@ -153,6 +138,17 @@ namespace PictureViewer.Models
             encoder.Save(fs);
         }
 
+        public static bool IsImageFile(string filePath)
+        {
+            if (string.IsNullOrWhiteSpace(filePath) || new DirectoryInfo(filePath).Exists)
+            {
+                return false;
+            }
+
+            var extension = Path.GetExtension(filePath).ToLower();
+            return new List<string> { ".jpg", ".jpeg", ".png", ".bmp", ".gif", }.Contains(extension);
+        }
+
         public FileInfo GetThumbnailFileInfo()
         {
             var currentDirectory = new DirectoryInfo(ParentDirectoryPath);
@@ -189,10 +185,7 @@ namespace PictureViewer.Models
 
         private static Size GetImageSizeFromStream(string filePath)
         {
-            var fileExtension = Path.GetExtension(filePath).ToLower();
-            var isImageFile = new List<string> { ".jpg", ".jpeg", ".png", ".bmp", ".gif", }.Contains(fileExtension);
-
-            if (!File.Exists(filePath) || !isImageFile)
+            if (!File.Exists(filePath) || !IsImageFile(filePath))
             {
                 return default;
             }

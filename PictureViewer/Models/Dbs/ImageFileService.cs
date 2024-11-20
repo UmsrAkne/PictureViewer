@@ -37,9 +37,8 @@ namespace PictureViewer.Models.Dbs
         /// </returns>
         public async Task<ExFileInfo> GetOrCreateExFileAsync(string imageFilePath)
         {
-            var exFileInfo = new ExFileInfo(new FileInfo(imageFilePath));
             var all = await imageFileRepository.GetAllAsync();
-            var value = all.FirstOrDefault(f => f.FullPath == exFileInfo.FileSystemInfo.FullName);
+            var value = all.FirstOrDefault(f => f.FullPath == new ExFileInfo(new FileInfo(imageFilePath)).FileSystemInfo.FullName);
 
             value?.SetFileSystemInfo(new FileInfo(imageFilePath));
 
@@ -53,25 +52,25 @@ namespace PictureViewer.Models.Dbs
                 return value;
             }
 
-            if (!exFileInfo.IsImageFile)
+            if (!ExFileInfo.IsImageFile(new ExFileInfo(new FileInfo(imageFilePath)).FullPath))
             {
-                return exFileInfo;
+                return new ExFileInfo(new FileInfo(imageFilePath));
             }
 
-            exFileInfo.Thumbnail = ExFileInfo.GenerateThumbnail(exFileInfo.FileSystemInfo.FullName, 80);
+            new ExFileInfo(new FileInfo(imageFilePath)).Thumbnail = ExFileInfo.GenerateThumbnail(new ExFileInfo(new FileInfo(imageFilePath)).FileSystemInfo.FullName, 80);
 
-            var thumbnailInfo = exFileInfo.GetThumbnailFileInfo();
+            var thumbnailInfo = new ExFileInfo(new FileInfo(imageFilePath)).GetThumbnailFileInfo();
 
             if (thumbnailInfo.Directory is { Exists: false, })
             {
                 thumbnailInfo.Directory.Create();
             }
 
-            ExFileInfo.SaveBitmapSourceToFile(exFileInfo.Thumbnail, thumbnailInfo.FullName);
-            exFileInfo.ThumbnailGenerated = true;
+            ExFileInfo.SaveBitmapSourceToFile(new ExFileInfo(new FileInfo(imageFilePath)).Thumbnail, thumbnailInfo.FullName);
+            new ExFileInfo(new FileInfo(imageFilePath)).ThumbnailGenerated = true;
 
-            await imageFileRepository.AddAsync(exFileInfo);
-            return exFileInfo;
+            await imageFileRepository.AddAsync(new ExFileInfo(new FileInfo(imageFilePath)));
+            return new ExFileInfo(new FileInfo(imageFilePath));
         }
     }
 }
